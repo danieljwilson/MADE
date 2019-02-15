@@ -1,0 +1,16 @@
+"0","```r
+```r
+#RT vs. Summed Value
+ggplot() +
+  geom_smooth(aes(x=summedVal, y=rt, group = factor(id), colour = factor(id)), df_mults) +
+  #geom_smooth(aes(x=summedVal, y=correct, colour = \flip\), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-3, 3))  +
+  scale_x_continuous(name=\Net Value ($)\, seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = \Reaction Time (s)\) +
+  scale_color_manual(labels = c(\Secondary\, \Primary\), values = c(\blue\, \red\)) +
+  guides(colour=guide_legend(\Study\)) +
+  ggtitle(\B\) +
+  theme_minimal()+
+  theme(legend.position=\none\)
+```
+```"

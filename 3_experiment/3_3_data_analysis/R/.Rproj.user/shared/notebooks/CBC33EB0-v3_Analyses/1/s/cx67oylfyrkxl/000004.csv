@@ -1,0 +1,5 @@
+"0","# removes all variables but NOT functions"
+"0","rm(list = setdiff(ls(), lsf.str()))"
+"0","load(""../../../data/swap_v2_clean.RData"")"
+"0","#load(""~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis/Data/v3_clean.Rdata"")"
+"0","#load(""~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis/Data/v4_learning.Rdata"")"

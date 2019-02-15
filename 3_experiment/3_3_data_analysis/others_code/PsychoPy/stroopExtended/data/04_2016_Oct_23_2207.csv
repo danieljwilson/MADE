@@ -1,0 +1,3 @@
+text,congruent,corrAns,letterColor,practice.thisRepN,practice.thisTrialN,practice.thisN,practice.thisIndex,resp.keys,resp.corr,resp.rt,date,frameRate,expName,session,participant,
+green,cong,down,green,0,0,0,5,right,0,0.469394922256,2016_Oct_23_2207,59.6185767914,stroop,01,04,
+green,incong,left,red,0,1,1,4,right,0,0.402088165283,2016_Oct_23_2207,59.6185767914,stroop,01,04,

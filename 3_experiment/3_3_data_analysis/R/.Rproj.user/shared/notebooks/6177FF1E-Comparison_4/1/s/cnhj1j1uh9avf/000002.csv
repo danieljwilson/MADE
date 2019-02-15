@@ -1,0 +1,11 @@
+"0","```r
+```r
+Pilot <- read.csv(\Data/NS_M_Pilot.csv\)
+
+subject_means <- group_by(study, subject) %>%
+  dplyr::summarize(accuracy = mean(accuracy, na.rm = T))
+
+mean(subject_means$accuracy)
+sd(subject_means$accuracy)
+```
+```"

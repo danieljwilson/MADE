@@ -1,0 +1,53 @@
+
+
+Model Notes Below
+
+possible ways to compare model fits
+DIC - hierarchical equivalent to BIC. Not bad but is biased towards more complex models.
+PPC - posterior predictive checks. Draw 100 draws from the posterior, generate a dataset each time. Compare to actual data using mean squared error (MSE). Can do this on choices, plus RT for each type of response.
+
+It is interesting to note that when z (starting point) is allowed to vary by condition, it does seem to be significant, but ultimately not that much (e.g. .48 from .5). The better fits seem to come from allowing z to just be a free parameter, but one that is not significantly different than 0.5
+
+It is also interesting that it seems NDT should be allowed to vary by trial (model8), although perhaps that is just because we have not yet figured out how to appropriately model z. It does not completely pass the eyeball test.
+
+The drift rate and barrier results are nice and consistent with what we would have predicted, I think.
+
+All in all, one model so far is not jumping out at me, but model5 is probably the closest I have to a first choice. Model10 is somewhat compelling because it shows clear evidence for across trial variability in the drift rate, but it does noticeably worse in the posterior predictive checks.
+
+Reg1
+v ~ TasteRating + HealthRating
+
+Reg2
+v ~ TasteSelf + HealthSelf + TasteSim + HealthSim + TasteDiff + HealthDiff
+
+Reg4
+v_reg = 'v ~ TasteSelf + HealthSelf + TasteSim + HealthSim + TasteDiff + HealthDiff'
+a_reg = 'a ~ C(type)'
+z is fixed at 0.5a
+
+Reg5
+v_reg = 'v ~ TasteSelf + HealthSelf + TasteSim + HealthSim + TasteDiff + HealthDiff'
+a_reg = 'a ~ C(type)'
+z is also a free parameter
+model5 vs model4 is a very good use of model comparison. Reg5 looks better to me on the whole, justifying using ‘z’ as a free parameter.
+
+Reg7
+v_reg = 'v ~ TasteSelf + HealthSelf + TasteSim + HealthSim + TasteDiff + HealthDiff'
+a_reg = 'a ~ C(type)'
+z is also a regression, using `C(type)’
+
+Reg8
+v_reg = 'v ~ TasteSelf + HealthSelf + TasteSim + HealthSim + TasteDiff + HealthDiff'
+a_reg = 'a ~ C(type)'
+t_reg = 't ~ C(type)'
+z is also a free parameter
+This model builds on Reg4 and Reg5.
+This model has the lowest DIC (but DIC can be biased towards more complex models), but is not any obviously better on the posterior predictive checks (PPC).
+
+Reg10
+v_reg = 'v ~ TasteSelf + HealthSelf + TasteSim + HealthSim + TasteDiff + HealthDiff'
+a_reg = 'a ~ C(type)'
+z is also a regression, using `C(type)’
+sv (across trial noise in drift rate) is also a free parameter
+This model is pretty comparable to Reg7.
+Lower DIC, but worse than 7 on all the posterior predictive checks.

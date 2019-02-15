@@ -1,0 +1,4 @@
+"0","# FOR CHOICE"
+"0","subject_means_choice <- group_by(d, participant, valBinCtr) %>%"
+"0","  dplyr::summarize(accept = mean(choice, na.rm = T))"
+"0","subject_means_choice"

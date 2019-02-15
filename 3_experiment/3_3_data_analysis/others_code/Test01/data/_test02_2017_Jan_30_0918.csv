@@ -1,0 +1,14 @@
+xPos,location,instr,congruence,yPos,corrAns,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,key_resp_2.keys,key_resp_2.rt,key_resp_3.keys,rating.response,rating.rt,key_resp_4.keys,key_resp_4.rt,date,frameRate,expName,session,participant,
+200,up_right,"Hello.
+
+In this experiment we are interested in how people make decisions.",consistent,200,h,0,0,0,0,down,0.303897857666,,,,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+200,up_right,The experiment should take about 90 minutes.,conflicting,200,s,0,1,1,1,down,0.085865020752,,,,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+200,up_right,"In the experiment, you will see images of faces and buildings that have different meanings.
+Some images are associated with winning money. Others are associated with losing money. 
+
+During this part, you will learn to associate different images with their appropriate outcomes.",consistent,200,s,0,2,2,2,down,0.102537155151,,,,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+200,up_right,You will then be tested to make sure that you have learned the values associated with the different faces and buildings.,conflicting,200,h,0,3,3,3,down,0.533821821213,,,,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+-200,up_left,"Make sure you pay attention as you learn about the images, since you will eventually be making choices about them in which you could end up winning or losing money.",consistent,200,h,0,4,4,4,down,0.152714014053,,,,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+,,,,,,,,,,,,None,,,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+,,,,,,,,,,,,,0,11.617,,,2017_Jan_30_0918,59.5610072664,test02,001,,
+,,,,,,,,,,,,,,,escape,1.53967285156,2017_Jan_30_0918,59.5610072664,test02,001,,

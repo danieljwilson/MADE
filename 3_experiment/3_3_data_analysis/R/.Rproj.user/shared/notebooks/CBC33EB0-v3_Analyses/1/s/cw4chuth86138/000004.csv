@@ -1,0 +1,4 @@
+"0","# FOR ACCURACY"
+"0","subject_means_acc <- group_by(d, participant, valBinCtr) %>%"
+"0","  dplyr::summarize(correct = mean(correct, na.rm = T))"
+"0","subject_means_acc"

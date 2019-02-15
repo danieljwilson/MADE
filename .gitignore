@@ -1,0 +1,13 @@
+# Don't track content of these folders #
+########################################
+1_project_management/
+2_ethics_governance/
+3_experiment/3_2_data/
+
+# Ignore all logs #
+###################
+*.log
+
+# Compiled source #
+###################
+

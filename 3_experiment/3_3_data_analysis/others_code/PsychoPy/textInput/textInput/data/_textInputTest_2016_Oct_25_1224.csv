@@ -1,0 +1,6 @@
+word,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,key_resp_2.keys,key_resp_2.rt,inputText,key_resp_3.keys,key_resp_3.rt,date,frameRate,expName,session,participant,
+,,,,,space,4.31435799599,,,,2016_Oct_25_1224,60.0864414185,textInputTest,001,,
+Please enter your Christian name,0,0,0,0,,,lkj,"['l', 'k', 'j', 'return']","[2.0518429279327393, 2.119187831878662, 2.1696219444274902, 2.585880994796753]",2016_Oct_25_1224,60.0864414185,textInputTest,001,,
+Please enter your surname,0,1,1,1,,,lkj,"['l', 'k', 'j', 'return']","[0.4520289897918701, 0.5364089012145996, 0.6188549995422363, 0.9017319679260254]",2016_Oct_25_1224,60.0864414185,textInputTest,001,,
+Please enter your age,0,2,2,2,,,lkj,"['l', 'k', 'j', 'return']","[0.3382120132446289, 0.4033820629119873, 0.4694831371307373, 0.8363420963287354]",2016_Oct_25_1224,60.0864414185,textInputTest,001,,
+Please enter your favourite colour,0,3,3,3,,,sadf,"['s', 'a', 'd', 'f', 'return']","[0.3178071975708008, 0.34127211570739746, 0.40208911895751953, 0.5193591117858887, 0.8688302040100098]",2016_Oct_25_1224,60.0864414185,textInputTest,001,,

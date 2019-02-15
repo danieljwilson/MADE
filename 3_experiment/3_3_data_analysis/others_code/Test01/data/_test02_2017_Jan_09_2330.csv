@@ -1,0 +1,18 @@
+xPos,location,instr,congruence,yPos,corrAns,houseImage,faceValue,word,houseValue,morph,faceImage,percent,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,test_faceValue.thisRepN,test_faceValue.thisTrialN,test_faceValue.thisN,test_faceValue.thisIndex,key_resp_2.keys,key_resp_2.rt,key_resp_3.keys,key_resp_3.rt,key_resp_4.keys,key_resp_4.rt,key_resp_5.keys,key_resp_5.rt,key_resp_7.keys,key_resp_7.rt,key_resp_11.keys,key_resp_11.rt,key_resp_8.keys,key_resp_8.rt,inputText,numberEntry.keys,numberEntry.rt,key_resp_10.keys,key_resp_10.rt,numberEntry_2.keys,numberEntry_2.rt,key_resp_14.keys,key_resp_14.rt,date,frameRate,expName,session,participant,
+200,up_right,"Hello.
+
+In this experiment we are interested in how people make decisions.",consistent,200,h,,,,,,,,0,0,0,0,,,,,space,1.7003430659,,,,,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+200,up_right,The experiment should take about 90 minutes.,conflicting,200,s,,,,,,,,0,1,1,1,,,,,space,0.284162266238,,,,,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+200,up_right,"In the experiment, you will see images of faces and buildings that have different meanings.
+Some images are associated with winning money. Others are associated with losing money. 
+
+During this part, you will learn to associate different images with their appropriate outcomes.",consistent,200,s,,,,,,,,0,2,2,2,,,,,space,0.150229875348,,,,,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+200,up_right,You will then be tested to make sure that you have learned the values associated with the different faces and buildings.,conflicting,200,h,,,,,,,,0,3,3,3,,,,,space,0.166929536208,,,,,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+-200,up_left,"Make sure you pay attention as you learn about the images, since you will eventually be making choices about them in which you could end up winning or losing money.",consistent,200,h,,,,,,,,0,4,4,4,,,,,space,0.133384038403,,,,,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,space,0.55018640653,,,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,space,0.966711526387,,,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,space,0.50025894423,,,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,space,3.36690076179,,,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,space,0.783521113743,,,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,space,0.716890918557,,,,,,,,,,2017_Jan_09_2330,59.9966977887,test02,001,,
+,,,,,,images/morphs/House07.png,-1,Enter the value of the face:,-0.39,100,images/morphs/faceMorph100.jpg,10,,,,,0,0,0,9,,,,,,,,,,,,,,,-0.50,"['4', 'backspace', '4', 'backspace', '1', 'period', '0', 'backspace', 'backspace', 'backspace', '0', 'period', '7', '0', 'return']","[9.167260800488293, 10.45016124175163, 11.51681729289703, 12.91760838474147, 15.300132582488004, 15.750163520104252, 21.383306790376082, 22.516968589043245, 22.700038169627078, 22.899905971135013, 23.717434918973595, 24.366925593814813, 26.0336000258103, 26.366968345828354, 33.83348492812365]",space,3.66736076854,"['3', 'backspace', '0', 'backspace', 'minus', '0', 'period', '5', '0', 'return']","[10.53354357770877, 11.866956441779621, 13.217962151393294, 14.116897369734943, 15.48387493158225, 15.650987251952756, 16.150778995768633, 16.800230246561114, 16.884133031009696, 17.750420800293796]",space,3.28352200973,2017_Jan_09_2330,59.9966977887,test02,001,,

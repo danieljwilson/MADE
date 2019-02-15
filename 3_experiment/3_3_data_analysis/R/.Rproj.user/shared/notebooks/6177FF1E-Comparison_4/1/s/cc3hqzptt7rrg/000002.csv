@@ -1,0 +1,6 @@
+"0","```r
+# STANDARD
+load(\"Data/NS_NM.Rdata\")
+```"
+"1","cannot open compressed file 'Data/NS_NM.Rdata', probable reason 'No such file or directory'Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection
+"

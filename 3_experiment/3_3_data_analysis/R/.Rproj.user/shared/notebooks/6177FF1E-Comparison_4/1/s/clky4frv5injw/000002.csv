@@ -1,0 +1,9 @@
+"0","```r
+```r
+library(psych)
+tapply(df_mults$rt, df_mults$id, mean)
+
+describeBy(df_mults$rt, df_mults$id)
+
+```
+```"

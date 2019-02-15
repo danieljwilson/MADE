@@ -1,0 +1,23 @@
+"0","```r
+```r
+tbl_dt(d_first_fix)[, .(beta = coef(summary(lm(fixDur ~ roi_val*factor(roi_mult))))[2], p = coef(summary(lm(fixDur ~ roi_val)))[8]), by = subject]
+
+```
+```"
+"1","Source: local data table [23 x 3]
+
+# A tibble: 23 x 3
+   subject         beta         p
+     <int>        <dbl>     <dbl>
+ 1       1 -0.236939867 0.0352030
+ 2       3  0.053784435 0.1361323
+ 3       7  0.003091059 0.8712336
+ 4       8  0.018461368 0.0354008
+ 5       9  0.099250112 0.5434953
+ 6      11  0.151850067 0.1164844
+ 7      12 -0.012709569 0.4997246
+ 8      15 -0.272687960 0.3738072
+ 9      18  0.173448244 0.1237943
+10      19  0.061886567 0.7588305
+# ... with 13 more rows
+"

@@ -1,0 +1,6 @@
+houseImage,faceValue,word,houseValue,morph,faceImage,percent,test.thisRepN,test.thisTrialN,test.thisN,test.thisIndex,exitKeys.keys,exitKeys.rt,exitKeys_2.keys,exitKeys_2.rt,exitKeys_3.keys,exitKeys_3.rt,Trial,correct,faceVal,houseVal,mult1House,mult2Face,summedVal,earnings,numberEntry_3.keys,numberEntry_3.rt,date,frameRate,expName,session,participant,
+,,,,,,,,,,,space,0.274916172028,,,,,,,,,,,,,,,2017_Mar_02_1014,59.669041495,test02_TestSegment,001,,
+,,,,,,,,,,,,,space,0.287997961044,,,,,,,,,,,,,2017_Mar_02_1014,59.669041495,test02_TestSegment,001,,
+,,,,,,,,,,,,,,,space,0.103317975998,,,,,,,,,,,2017_Mar_02_1014,59.669041495,test02_TestSegment,001,,
+images/morphs/House07.png,-1,Enter the value of the face:,-0.39,100,images/morphs/faceMorph100.jpg,10,0,0,0,9,,,,,,,1,0,0.54,-0.76,1,1,-0.22,-0.22,['f'],[9.283689022064209],2017_Mar_02_1014,59.669041495,test02_TestSegment,001,,
+images/morphs/House03.png,1,Enter the value of the face:,0.61,0,images/morphs/faceMorph1.jpg,0,0,1,1,0,,,,,,,2,1,0.58,0.74,1,1,1.32,1.1,['f'],[5.270630836486816],2017_Mar_02_1014,59.669041495,test02_TestSegment,001,,

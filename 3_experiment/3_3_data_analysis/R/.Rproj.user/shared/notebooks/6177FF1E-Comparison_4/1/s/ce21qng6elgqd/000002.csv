@@ -1,0 +1,43 @@
+"0","```r
+```r
+##############
+# Clean Data
+##############
+NS_M <- read.csv(\Data/NS_M_raw.csv\)
+
+# Remove reactions faster than .2 seconds
+# https://www.humanbenchmark.com/tests/reactiontime/statistics
+NS_NM<- NS_NM[!(NS_NM$rt<0.2),]
+NS_M<- NS_M[!(NS_M$rt<0.2),]
+
+#remove earnings below 0
+NS_NM <- NS_NM[!(NS_NM$finalEarnings<0),]
+NS_M <- NS_M[!(NS_M$finalEarnings<0),]
+
+#MORE AGRESSIVE: REMOVE BELOW 70% (removes 3 additional people)
+NS_NM <- NS_NM[!(NS_NM$accuracy<0.70),]
+NS_M <- NS_M[!(NS_M$accuracy<0.70),]
+
+# Remove outlier (mainly slow) reactions using MAD
+# https://rpubs.com/hauselin/outliersDetect
+# https://www.r-bloggers.com/absolute-deviation-around-the-median/
+  
+outliersMAD <- function(data, MADCutOff = 2.5, replace = NA, values = FALSE, bConstant = 1.4826, digits = 2) {
+  #compute number of absolute MADs away for each value
+  #formula: abs( ( x - median(x) ) )/ mad(x)
+  absMADAway <- abs((data - median(data, na.rm = T))/mad(data, constant = bConstant, na.rm = T))
+  #subset data that has absMADAway greater than the MADCutOff and replace them with replace
+  #can also replace values other than replace
+  data[absMADAway > MADCutOff] <- replace
+  
+  if (values == TRUE) { 
+    return(round(absMADAway, digits)) #if values == TRUE, return number of mads for each value
+  } else {
+    return(round(data, digits)) #otherwise, return values with outliers replaced
+  }
+}
+
+NS_NM <- NS_NM[!(outliersMAD(NS_NM$rt, values=T) > 5),]
+NS_M <- NS_M[!(outliersMAD(NS_M$rt, values=T) > 5),]
+```
+```"

@@ -1,0 +1,17 @@
+"0","```r
+library(dtplyr)
+library(data.table)
+
+```"
+"1","data.table 1.11.4  Latest news: http://r-datatable.com
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:reshape2’:
+
+    dcast, melt
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+"

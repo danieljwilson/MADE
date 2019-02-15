@@ -1,0 +1,1237 @@
+---
+title: "MADE: Experiment Comparisons"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+
+## STARTUP
+```{r setup}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+*Remember...*
+The current working directory inside a notebook chunk is always the directory containing the notebook .Rmd file.
+
+### LOAD LIBRARIES
+```{r}
+
+library(magrittr)
+library(ggplot2)
+library(dplyr)
+library(ggplot2)
+library(lme4)
+library(tidyr)
+library(merTools) 
+library(lsr)
+library(reshape2)
+library(dtplyr)
+library(data.table)
+library(Hmisc) # cut2 function
+
+library(lme4)
+library(nlme)
+library(sjPlot)
+library(sjmisc)
+
+#library("optimx")
+
+```
+
+
+### IMPORT DATA FROM ALL EXPERIMENTS
+```{r}
+
+# Load Experiment V1
+load("../Data/S_M.Rdata")
+v1 <- S_M
+
+# Load Experiment V2 (called v4)
+load("../Data/v2_clean.Rdata")
+v2 <- v2_clean
+
+# Load Experiment V3
+load("../Data/v3_clean.Rdata")
+v3 <- v3_clean
+```
+
+
+# PSYCHOMETRICS
+
+## PLOTS
+### CREATE DF
+```{r}
+# histogram bin size based on equal numbers of observations
+
+d <- v1
+d$choice[d$choice == -1] = 0 # -1 for Tavares needs to be 0 in order to calculate prob.
+
+# How many bins?
+numBins = 19 # same as Krajbich
+
+# SUMMED VAL
+d$valBin <- as.numeric(cut2(d$summedVal, g=numBins))
+d$valBinAmt <- cut2(d$summedVal, g=numBins)
+d$valBinCtr <- cut2(d$summedVal, g=numBins, levels.mean=TRUE)
+vals = as.numeric(as.character(unique(d$valBinCtr)))
+vals = sort(vals)
+
+# FOR RT
+subject_means_rt <- group_by(d, subject, valBinCtr) %>%
+  dplyr::summarize(rt = mean(rt, na.rm = T))
+subject_means_rt
+
+# FOR ACCURACY
+subject_means_acc <- group_by(d, subject, valBinCtr) %>%
+  dplyr::summarize(correct = mean(correct, na.rm = T))
+subject_means_acc
+
+# FOR CHOICE
+subject_means_choice <- group_by(d, subject, valBinCtr) %>%
+  dplyr::summarize(accept = mean(choice, na.rm = T))
+subject_means_choice
+
+# Create DF with all bins as columns
+# FOR RT
+subject_means_wide_rt <-
+  spread(subject_means_rt,
+         key = valBinCtr,
+         value = rt,
+         sep = "_")
+
+# FOR ACCURACY
+subject_means_wide_acc <-
+  spread(subject_means_acc,
+         key = valBinCtr,
+         value = correct,
+         sep = "_")
+
+# FOR CHOICE
+subject_means_wide_choice <-
+  spread(subject_means_choice,
+         key = valBinCtr,
+         value = accept,
+         sep = "_")
+
+# DF with mean and SD for each bin
+
+rt_x = sapply(subject_means_wide_rt, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+rt_x = t(rt_x)
+acc_x = sapply(subject_means_wide_acc, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+acc_x = t(acc_x)
+choice_x = sapply(subject_means_wide_choice, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+choice_x = t(choice_x)
+
+# MEANs
+rt_mean = numeric()
+acc_mean = numeric()
+choice_mean = numeric()
+for(i in 2:20){
+  rt_mean = c(rt_mean, rt_x[i,1][[1]])
+  acc_mean = c(acc_mean, acc_x[i,1][[1]])
+  choice_mean = c(choice_mean, choice_x[i,1][[1]])
+}
+
+# SDs
+rt_sd = numeric()
+acc_sd = numeric()
+choice_sd = numeric()
+for(i in 2:20){
+  rt_sd = c(rt_sd, rt_x[i,2][[1]])
+  acc_sd = c(acc_sd, acc_x[i,2][[1]])
+  choice_sd = c(choice_sd, choice_x[i,2][[1]])
+}
+
+# Create DF
+df = data.frame("val" = vals,
+                "rt_mean" = rt_mean, "rt_sd" = rt_sd,
+                "acc_mean" = acc_mean, "acc_sd" = acc_sd,
+                "choice_mean" = choice_mean, "choice_sd" = choice_sd)
+
+# Add SEs
+nVal = sqrt(length(unique(d$subject))) # calculate the denominator of the SE equation
+df$rt_se <- df$rt_sd/nVal
+df$acc_se <- df$acc_sd/nVal
+df$choice_se <- df$choice_sd/nVal
+```
+
+
+```{r}
+# Hacky way to separate dataframes...after creating in the above chunk, sequentially set here.
+
+v1_df <- df
+
+#v3_df <- df
+
+```
+
+
+### REACTION TIME
+```{r}
+#df <- v1_df
+#df <- v2_df
+#df <- v3_df
+
+# combined study df
+df1 <- v1_df
+df2 <- v3_df
+df1$study = 1
+df2$study = 2
+
+df <- rbind(df1, df2)
+
+# RT
+ggplot(data = df,aes(x = val,y = rt_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = rt_mean-rt_se,ymax = rt_mean+rt_se)) + 
+  labs(x = "Net Value", y = "Reaction Time (seconds)") +
+  theme_minimal() +
+  ggtitle("Mean Reaction Time by Net Value")
+```
+
+### ACCEPTANCE RATE
+```{r}
+# CHOICE
+ggplot(data=df, aes(x=val, y=choice_mean, group=factor(study), colour=factor(study))) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = choice_mean-choice_se, ymax = choice_mean+choice_se)) + 
+  labs(x = "Offer Value (Net $)", y = "p(Accept)") +
+  scale_x_continuous(breaks = seq(-9,9,1)) +
+  theme_minimal() +
+  guides(colour=guide_legend("Study\nVersion")) +
+  theme(axis.title.x=element_text(size=17),
+        axis.title.y = element_text(size = 17))
+  #ggtitle("A") +
+  #theme(plot.title = element_text(size=22))
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("pAcc.pdf", width = 18, height = 12, units = "cm")
+```
+
+### ACCURACY
+```{r}
+# ACCURACY
+ggplot(data = df,aes(x = val,y = acc_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = acc_mean-acc_se, ymax = acc_mean+acc_se)) + 
+  labs(x = "Net Value", y = "p(Correct)") +
+  theme_minimal() +
+  ggtitle("B") +
+  theme(plot.title = element_text(size=22))
+#  ggtitle("p(Correct) by Net Value ")
+```
+
+
+### CREATE DF (ABSOLUTE VALUES)
+```{r}
+# ABS Val
+d <- v3
+
+d <- d[d$round_num>0,]
+
+d$choice[d$choice == -1] = 0 # -1 for Tavares needs to be 0 in order to calculate prob.
+
+d$absValBin <- as.numeric(cut2(d$absSummedVal, g=9))
+d$absValBinAmt <- cut2(d$absSummedVal, g=9)
+d$absValBinCtr <- cut2(d$absSummedVal, g=9, levels.mean=TRUE)
+absVals = as.numeric(as.character(unique(d$absValBinCtr)))
+absVals = sort(absVals)
+
+# Abs Val RT
+abs_subject_means_rt <- group_by(d, subject, absValBinCtr) %>%
+  dplyr::summarize(rt = mean(rt, na.rm = T))
+abs_subject_means_rt
+
+# FOR Fixations
+abs_subject_means_fix <- group_by(d, subject, absValBinCtr) %>%
+  dplyr::summarize(fixations = mean(swapAmount, na.rm = T))
+abs_subject_means_fix
+
+# Create DF with all bins as columns
+# FOR RT
+abs_subject_means_wide_rt <-
+  spread(abs_subject_means_rt,
+         key = absValBinCtr,
+         value = rt,
+         sep = "_")
+
+# FOR ACCURACY
+abs_subject_means_wide_fix <-
+  spread(abs_subject_means_fix,
+         key = absValBinCtr,
+         value = fixations,
+         sep = "_")
+
+# DF with mean and SD for each bin
+
+rt_x = sapply(abs_subject_means_wide_rt, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+rt_x = t(rt_x)
+fix_x = sapply(abs_subject_means_wide_fix, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+fix_x = t(fix_x)
+
+rt_x
+
+rt_mean = numeric()
+fix_mean = numeric()
+for(i in 2:10){   # for some reason this needs to be 2:10 for v1 and v3 but 2:9 for v2 
+  rt_mean = c(rt_mean, rt_x[i,1][[1]])
+  fix_mean = c(fix_mean, fix_x[i,1][[1]])
+}
+
+rt_sd = numeric()
+fix_sd = numeric()
+for(i in 2:10){
+  rt_sd = c(rt_sd, rt_x[i,2][[1]])
+  fix_sd = c(fix_sd, fix_x[i,2][[1]])
+}
+
+
+df = data.frame("abs_val" = absVals, "rt_mean" = rt_mean, "rt_sd" = rt_sd, "fix_mean" = fix_mean, "fix_sd" = fix_sd)
+nVal = sqrt(length(unique(d$subject))) # calculate the denominator of the SE equation
+df$rt_se <- df$rt_sd/nVal
+df$fix_se <- df$fix_sd/nVal
+df
+```
+
+```{r}
+# Hacky way to separate dataframes...after creating in the above chunk, sequentially set here.
+
+v3_df_abs <- df
+#v1_df_abs <- df
+```
+
+
+### RT (ABSOLUTE NET VALUE)
+```{r}
+#df <- v1_df_abs
+#df <- v2_df_abs
+#df <- v3_df_abs
+
+# combined study df
+df1 <- v1_df_abs
+df2 <- v3_df_abs
+df1$study = 1
+df2$study = 2
+
+df <- rbind(df1, df2)
+
+ggplot(data = df,aes(x = abs_val, y = rt_mean, group=factor(study), colour=factor(study))) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = rt_mean-rt_se,ymax = rt_mean+rt_se)) + 
+  labs(x = "Absolute Offer Value (Net $)", y = "Reaction Time (s)") +
+  scale_x_continuous(breaks = seq(0,max(df$abs_val),0.5)) +
+  scale_y_continuous(breaks = seq(2.2,max(df$rt_mean)+0.2,0.2)) +
+  theme_minimal()+
+  guides(colour=guide_legend("Study\nVersion")) +
+  theme(axis.title.x=element_text(size=18),
+        axis.title.y = element_text(size = 18))
+  #ggtitle("Mean Reaction Time by Absolute Net Value")
+  
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("RT_v3.pdf", width = 18, height = 12, units = "cm")
+```
+
+### FIXATIONS (ABSOLUTE NET VALUE)
+```{r}
+ggplot(data = df,aes(x = abs_val,y = fix_mean, group=factor(study), colour=factor(study))) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = fix_mean-fix_se, ymax = fix_mean+fix_se)) + 
+  labs(x = "Absolute Offer Value (Net $)", y = "Fixation Count") +
+  scale_x_continuous(breaks = seq(0,max(df$abs_val),0.5)) +
+  scale_y_continuous(breaks = seq(2.4,max(df$fix_mean)+0.1,0.1)) +
+  theme_minimal()+
+  guides(colour=guide_legend("Study\nVersion")) +
+  theme(axis.title.x=element_text(size=17),
+        axis.title.y = element_text(size = 17))
+  ggtitle("Fixations by Absolute Net Value ")
+  
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("Fix_Num_v3.pdf", width = 18, height = 12, units = "cm")
+  
+```
+
+
+
+
+# EFFECTS OF WEIGHT AND VALUE
+
+
+## PLOTS
+
+### PLOT: FIRST FIXATION TIME VS. VALUE & MULTIPLIER
+```{r}
+df <- v3
+  
+ggplot() +
+  geom_smooth(aes(x=firstVal/firstMult, y=`1_fixation`, group = factor(firstMult), colour = factor(firstMult)), df) +
+  #geom_smooth(aes(x=summedVal, y=logRT, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-1, 1))  +
+  #ggtitle("First Fixation Timing vs Total Value")
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth() +  # Add a loess smoothed fit curve with confidence region
+  theme_minimal()+
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Attribute Weighted Value ($)", seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = "Attribute Dwell Time (s)")+
+  theme(axis.title.x=element_text(size=14),
+        axis.title.y = element_text(size = 14))+
+  theme(legend.position="right")
+
+#Test for SIG
+summary(lm(`1_fixation`~firstVal + firstMult, df))
+```
+
+### PLOT: SECOND FIXATION TIME VS. VALUE & MULTIPLIER
+```{r}
+df <- v3
+  
+ggplot() +
+  geom_smooth(aes(x=secondVal/secondMult, y=`2_fixation`, group = factor(secondMult), colour = factor(secondMult)), df) +
+  #geom_smooth(aes(x=summedVal, y=logRT, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-1, 1))  +
+  #ggtitle("Second Fixation Timing vs Total Value")
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth() + # Add a loess smoothed fit curve with confidence region
+  theme_minimal()+
+  guides(colour=guide_legend("Attribute\nWeight")) +
+  scale_x_continuous(name="Attribute Base Value ($)", seq(-1,1,0.2), limits = c(-1,1))+
+  scale_y_continuous(name = "Attribute Dwell Time (s)") +
+  theme(axis.title.x=element_text(size=14),
+        axis.title.y = element_text(size = 14),
+        legend.title = element_text(size = 10))+
+  theme(legend.position="right")
+
+#Test for SIG
+summary(lm(`2_fixation`~secondVal + secondMult, df))
+
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("2ndFix_v1.pdf", width = 18, height = 12, units = "cm")
+```
+
+### PLOT: MIDDLE FIXATION TIME VS. VALUE & MULTIPLIER
+```{r}
+#------------------------------#
+# Use the Krajich Cleaned Data #
+#------------------------------#
+# make the data
+d<- S_M_K
+d$subject <- factor(d$subject) 
+
+# delete all rows but selected
+dMid <- d[ which(d$fixNum>1 & d$revFixNum>1), ] # only middle fixations
+dMid$currentMult = 0
+dMid$currentVal = 0
+for( i in 1:length(dMid$trial)){
+  if(dMid$roi[i] == 0){
+    dMid$currentMult[i] = dMid$multFace[i]
+    dMid$currentVal[i] = dMid$totValFace[i]
+  }
+  if(dMid$roi[i] == 1){
+    dMid$currentMult[i] = dMid$multHouse[i]
+    dMid$currentVal[i] = dMid$totValHouse[i]
+  }
+} 
+  
+ggplot() +
+  geom_smooth(aes(x=currentVal, y=fixDur, group = factor(currentMult), colour = factor(currentMult)), dMid) +
+  #geom_smooth(aes(x=summedVal, y=logRT, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-3, 3))  +
+  #ggtitle("Second Fixation Timing vs Total Value")
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth() + # Add a loess smoothed fit curve with confidence region
+  theme_minimal()+
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Net Value ($)", seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = "Middle Fixation Duration (s)")
+
+```
+
+### PLOT: FINAL FIXATION TIME VS. VALUE & MULTIPLIER
+```{r}
+#------------------------------#
+# Use the Krajich Cleaned Data #
+#------------------------------#
+# make the data
+d<- S_M_K
+d$subject <- factor(d$subject) 
+
+dFinal <- d[ which(d$revFixNum==1), ] # only final fixations
+dFinal$finalVal = 0
+dFinal$finalMult = 0
+for (i in 1:length(dFinal$trial)){
+  if(dFinal$roi[i] == 0){
+    dFinal$finalVal[i] <- dFinal$totValFace[i]
+    dFinal$finalMult[i] <- dFinal$multFace[i]
+  }
+  if(dFinal$roi[i] == 1){
+    dFinal$finalVal[i] <- dFinal$totValHouse[i]
+    dFinal$finalMult[i] <- dFinal$multHouse[i]
+  }
+}
+  
+ggplot() +
+  geom_smooth(aes(x=finalVal, y=fixDur, group = factor(finalMult), colour = factor(finalMult)), dFinal) +
+  #geom_smooth(aes(x=summedVal, y=logRT, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-3, 3))  +
+  #ggtitle("Second Fixation Timing vs Total Value")
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth() + # Add a loess smoothed fit curve with confidence region
+  theme_minimal()+
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Net Value ($)", seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = "Final Fixation Duration (s)")
+
+```
+
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+
+### PLOT: SAVE
+```{r}
+# Save Plot (for Poster)
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("2ndFix.pdf", width = 18, height = 12, units = "cm")
+```
+
+
+
+## REGRESSIONS
+
+### INTERACTION VALUE * ATTENTION: Study 1
+```{r}
+
+d <- v1
+d$subject <- factor(d$subject)
+
+# Original regression
+fit1 <- glmer(choice ~ faceTotal * total_0_face + houseTotal * total_1_house + (1 + faceTotal * total_0_face + houseTotal * total_1_house | subject), family = binomial("logit"), data = d,
+              glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit1)
+
+# subset trials with difficult choices
+## opposite sign
+## difference of 0.25 or less (try different values for this)
+d <- d[abs(d$summedVal)<3,]
+d <- d[sign(d$faceTotal) != sign(d$houseTotal),]
+# remove learning trend
+subs = unique(d$subject)
+
+for (i in subs){
+  model <- lm(total_1_house ~ poly(Trial,2), data = d[d$subject==i,])
+  d$resid_dwell_house[d$subject==i] = model$residuals
+  model <- lm(total_0_face ~ poly(Trial,2), data = d[d$subject==i,])
+  d$resid_dwell_face[d$subject==i] = model$residuals
+}
+
+
+
+# Cendri's Fit
+fit1 <- glmer(choice ~ faceVal * mult2Face * resid_dwell_face + houseVal * mult1House * resid_dwell_house + (1|subject) + (faceVal + resid_dwell_face|subject) + (houseVal + resid_dwell_house | subject), family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit1)
+
+# Hard trial fit
+fit1_025 <- glmer(choice ~ faceTotal * total_0_face + houseTotal * total_1_house +
+                    (1|subject) + (faceTotal + total_0_face|subject) + (houseTotal + total_1_house| subject),
+                  family = binomial("logit"), data = d,
+                  glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit1_025)
+
+
+###############
+# PLOT
+###############
+
+# turn into dataframe
+fitDf <- as.data.frame.matrix(coef(summary(fit1_025))) 
+names(fitDf)[names(fitDf) == "Std. Error"] <- 'se'
+names(fitDf)[names(fitDf) == "z value"] <- 'z'
+names(fitDf)[names(fitDf) == "Pr(>|z|)"] <- 'p'
+fitDf$'Fixed Effects'<-rownames(fitDf)
+
+# remove intercept
+fitDf = fitDf[-1,]
+fitDf[1,5] = "WFV"
+fitDf[2,5] = "TFD"
+fitDf[3,5] = "WHV"
+fitDf[4,5] = "THD"
+fitDf[5,5] = "WFV:TFD"
+fitDf[6,5] = "WHV:THD"
+
+# *'s for significance
+fitDf$star <- ""
+fitDf$star[fitDf$p <= .05]  <- "*"
+fitDf$star[fitDf$p <= .01]  <- "**"
+fitDf$star[fitDf$p <= .001] <- "***"
+
+# Bar Plot
+positions <- c("WFV", "WHV", "TFD", "THD", "WFV:TFD", "WHV:THD")
+
+ggplot(fitDf, aes(`Fixed Effects`, z, fill=`Fixed Effects`)) + 
+  geom_bar(stat = "identity", width = 0.5) + 
+  geom_errorbar(aes(ymin=z-se, ymax=z+se), width=0.4) +
+  geom_text(aes(label=star), colour="black", vjust=-0.5, size=6) +
+  scale_x_discrete(limits = positions) +
+  theme_minimal() +
+  theme(axis.title.x=element_text(size=14),
+      axis.title.y = element_text(size = 14))+
+  theme(legend.position="none")
+
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("v1_Interactions.pdf", width = 20, height = 12, units = "cm")
+```
+
+
+### INTERACTION VALUE * ATTENTION: Study 2
+```{r}
+
+# Bias to weigh the face value more than justified?
+# faceTotal/houseTotal = value
+# total_0_face/total_1_house = fixation time
+d <- v3
+#d <- v3[v3$round_num>0,]
+d$subject <- factor(d$subject)
+
+# Remove nas
+d <- d[!is.na(d$choice),]
+sum(is.na(d$choice))
+
+# subset only trials with 1/2/3 mults
+d <- d[d$face_mult>0.9 & d$face_mult<4,]
+d <- d[d$house_mult>0.9 & d$house_mult<4,]
+
+# subset trials with difficult choices
+## opposite sign
+## difference of 0.25 or less (try different values for this)
+d <- d[abs(d$summed_val)<.25,]
+d <- d[sign(d$face_val_total) != sign(d$house_val_total),]
+
+# mean center dwell times
+d = d %>% # This line starts off a "tidy" chain of commands with our nonGaussianData
+  group_by( subject ) %>% # This line makes subsequent commands operate once per stateID
+  mutate( meanFaceDwell = mean( total_fix_face_0, na.rm=T ),
+          meanHouseDwell = mean( total_fix_house_1, na.rm=T ),# This line calculates the average amount of corporate tobacco funding legislators received in each state and saves it in a variable called meanMoney
+          centeredFaceDwell = total_fix_face_0 - meanFaceDwell,
+          centeredHouseDwell = total_fix_house_1 - meanHouseDwell) %>% # This line centres each legislator's level of funding from tobacco companies around their state's mean
+  ungroup # This line undoes the "group_by" command
+
+# remove learning trend
+subs = unique(d$subject)
+attentionWeightFace = attentionWeightHouse =  NA
+s = 1
+for (i in subs){
+  model <- lm(total_fix_house_1 ~ poly(trial,2), data = d[d$subject==i,])
+  d$resid_dwell_house[d$subject==i] = model$residuals
+  model <- lm(total_fix_face_0 ~ poly(trial,2), data = d[d$subject==i,])
+  d$resid_dwell_face[d$subject==i] = model$residuals
+  
+  # s = 1
+  # s = s + 1
+  # i = subs[s]
+  # temp = subset(d, subject == i)
+  # model <-glm(choice ~ face_val_total + house_val_base, 
+  #             data = temp, family = binomial(link = 'logit'))
+  # model2 <-logistf(choice ~ face_val_total + house_val_base, 
+  #             data = temp, family = binomial(link = 'logit'))
+  # 
+  # attentionWeightFace[s] = model$coefficients['face_val_base:face_mult:resid_dwell_face']
+  # attentionWeightHouse[s] = model$coefficients['house_val_base:house_mult:resid_dwell_house']
+}
+
+# Cendri's fit
+fit <- glmer(choice ~ face_val_base * face_mult * resid_0_face + house_val_base * house_mult * resid_1_house + (1|subject) + (face_val_base + resid_0_face|subject) + (house_val_base + resid_1_house | subject), family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit)
+
+# Cendri's fit polynomial
+fit <- glmer(choice ~ face_val_base * face_mult * resid_dwell_face + house_val_base * house_mult * resid_dwell_house + (1|subject) + (face_val_base + resid_dwell_face|subject) + (house_val_base + resid_dwell_house | subject), family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit)
+
+# Cendri's fit polynomial: Total value
+fit <- glmer(choice ~ face_val_total * resid_dwell_face + house_val_total * resid_dwell_house + (1|subject) + (face_val_total + resid_dwell_face|subject) + (house_val_total + resid_dwell_house | subject), family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit)
+
+
+
+
+# Cendri's fit difficult trials: Total value
+fit2_025 <- glmer(choice ~ face_val_total * total_fix_face_0 + house_val_total * total_fix_house_1 + 
+               (1|subject) + (face_val_total * total_fix_face_0|subject) + (house_val_total * total_fix_house_1|subject),
+             family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit2_025)
+
+# interaction does not change with mean centering...just main effects
+# e1071 package: skewness(variable) - if it exceed abs(1) [log transform]
+  # after transform run skewness test again
+  # if log doesnt work go to 3rd root
+# Can also do a model where they are all combined (1+face_val....|subject)
+# THEN: Anova between the two models
+
+# moderate interaction effect (3rd moderator)
+# discrepancy between weighted values as 3rd moderator
+
+
+# Cendri's fit difficult trials: MEAN centered version
+fit2_025 <- glmer(choice ~ face_val_total * centeredFaceDwell + house_val_total * centeredHouseDwell + 
+               (1|subject) + (face_val_total * centeredFaceDwell|subject) + (house_val_total * centeredHouseDwell | subject),
+             family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit2_025)
+
+# Simplifed version (Hause)
+fit2_simple_025 <- glmer(choice ~ face_val_total + total_fix_face_0 + house_val_total + total_fix_house_1 + 
+               (1|subject) + (face_val_total + total_fix_face_0|subject) + (house_val_total + total_fix_house_1 | subject),
+             family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit2_simple_025)
+
+# Mean Centered: Simplifed version (Hause) 
+fit2_simple_025 <- glmer(choice ~ face_val_total + centeredFaceDwell + house_val_total + centeredHouseDwell + 
+               (1|subject) + (face_val_total + centeredFaceDwell|subject) + (house_val_total + centeredHouseDwell | subject),
+             family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit2_simple_025)
+
+# Go by 10cent intervals for both versions from 0 - 1.00 and plot interaction effect
+
+
+# fit for weights
+fit <- glmer(choice ~ face_mult * total_0_face + house_mult * total_1_house + (1|subject) + (face_mult * total_0_face|subject) + (house_mult * total_1_house | subject), family = binomial("logit"), data = d,
+             glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000)))
+summary(fit)
+
+###############
+# PLOT
+###############
+
+# turn into dataframe
+fitDf <- as.data.frame.matrix(coef(summary(fit2_025))) 
+names(fitDf)[names(fitDf) == "Std. Error"] <- 'se'
+names(fitDf)[names(fitDf) == "z value"] <- 'z'
+names(fitDf)[names(fitDf) == "Pr(>|z|)"] <- 'p'
+fitDf$'Fixed Effects'<-rownames(fitDf)
+
+# remove intercept
+fitDf = fitDf[-1,]
+fitDf[1,5] = "WFV"
+fitDf[2,5] = "TFD"
+fitDf[3,5] = "WHV"
+fitDf[4,5] = "THD"
+fitDf[5,5] = "WFV:TFD"
+fitDf[6,5] = "WHV:THD"
+
+# *'s for significance
+fitDf$star <- ""
+fitDf$star[fitDf$p <= .05]  <- "*"
+fitDf$star[fitDf$p <= .01]  <- "**"
+fitDf$star[fitDf$p <= .001] <- "***"
+
+# Bar Plot
+positions <- c("WFV", "WHV", "TFD", "THD", "WFV:TFD", "WHV:THD")
+
+ggplot(fitDf, aes(`Fixed Effects`, z, fill=`Fixed Effects`)) + 
+  geom_bar(stat = "identity", width = 0.5) + 
+  geom_errorbar(aes(ymin=z-se, ymax=z+se), width=0.4) +
+  geom_text(aes(label=star), colour="black", vjust=-0.5, size=6) +
+  scale_x_discrete(limits = positions) +
+  theme_minimal() +
+  theme(axis.title.x=element_text(size=14),
+      axis.title.y = element_text(size = 14))+
+  theme(legend.position="none")
+
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/Alt_Values_Interaction/")
+ggsave("v2_Interactions_100.pdf", width = 20, height = 12, units = "cm")
+```
+
+```{r}
+sjp.glmer(fit2_025,
+          facet.grid = FALSE,
+          sort.est = "sort.all",
+          y.offset = .4)
+
+sjp.glmer(fit2_025, sort.est = "house_val_total", y.offset = .4)
+
+```
+
+
+
+### WEIGHTING OF MULTS (GLM): Study 1
+```{r}
+# Check for linear trend in weights...
+d<- v1
+mults = c(1,2,3)
+
+for (i in mults){
+  d_sub <- d[d$face_mult==i,]
+
+  glm_1 <- glmer(choice ~ face_val_base + house_val_total + (1|subject) + (face_val_base + house_val_total|subject),
+               family = binomial("logit"), 
+               data = d_sub, 
+               glmerControl(optimizer="bobyqa",
+                            optCtrl = list(maxfun = 100000)))
+  print(summary(glm_1))
+}
+```
+
+
+### WEIGHTING OF MULTS (GLM): Study 2
+```{r}
+d <- v3
+mults = c(0.1,0.5,1,2,3,10)
+
+for (i in mults){
+  d_sub <- d[d$face_mult==i,]
+
+  glm_1 <- glmer(choice ~ face_val_base + house_val_total + (1|subject) + (face_val_base + house_val_total|subject),
+               family = binomial("logit"), 
+               data = d_sub, 
+               glmerControl(optimizer="bobyqa",
+                            optCtrl = list(maxfun = 100000)))
+  print(summary(glm_1))
+}
+```
+
+
+
+
+
+### REGRESSORS FOR EACH MULT: Study 1 
+```{r}
+# Create regressors for each multipier
+d <- v1
+
+d$face_mult_1 = d$face_mult_2 = d$face_mult_3 = 0
+d$house_mult_1 = d$house_mult_2 = d$house_mult_3 = 0
+
+d$face_mult_1[d$mult2Face == 1] <- d$faceVal[d$mult2Face == 1]
+d$face_mult_2[d$mult2Face == 2] <- d$faceVal[d$mult2Face == 2]
+d$face_mult_3[d$mult2Face == 3] <- d$faceVal[d$mult2Face == 3]
+
+d$house_mult_1[d$mult1House == 1] <- d$houseVal[d$mult1House == 1]
+d$house_mult_2[d$mult1House == 2] <- d$houseVal[d$mult1House == 2]
+d$house_mult_3[d$mult1House == 3] <- d$houseVal[d$mult1House == 3]
+
+glm_fit_v1 <- glmer(choice ~ face_mult_1 + face_mult_2 + face_mult_3
+                 + house_mult_1 + house_mult_2 + house_mult_3
+                 + (1|subject), # + (face_mult_1 + face_mult_2 + face_mult_3
+                 #+ house_mult_1 + house_mult_2 + house_mult_3|subject),
+                 data = d,
+                 family = binomial("logit"),
+                 glmerControl(optimizer="bobyqa",
+                 optCtrl = list(maxfun = 100000))
+                 )
+summary(glm_fit_v1)
+
+sjp.glmer(glm_fit, type = "fe")
+sjp.glmer(glm_fit,
+          type = "ri.slope",
+          facet.grid = FALSE)
+sjp.glmer(glm_fit,
+          facet.grid = FALSE,
+          sort.est = "sort.all",
+          y.offset = .4)
+
+lattice::dotplot(ranef(glm_fit))
+
+sjp.glmer(glm_fit,
+          type = "ri.pc",
+          show.se = TRUE)
+```
+
+### REGRESSORS FOR EACH MULT: Study 2 
+```{r}
+# Create regressors for each multipier
+d <- v3
+
+d$face_mult_01 = d$face_mult_05 = d$face_mult_1 = d$face_mult_2 = d$face_mult_3 = d$face_mult_10 = 0
+d$house_mult_01 = d$house_mult_05 = d$house_mult_1 = d$house_mult_2 = d$house_mult_3 = d$house_mult_10 = 0
+
+d$face_mult_01[d$face_mult == 0.1] <- d$face_val_base[d$face_mult == 0.1]
+d$face_mult_05[d$face_mult == 0.5] <- d$face_val_base[d$face_mult == 0.5]
+d$face_mult_1[d$face_mult == 1] <- d$face_val_base[d$face_mult == 1]
+d$face_mult_2[d$face_mult == 2] <- d$face_val_base[d$face_mult == 2]
+d$face_mult_3[d$face_mult == 3] <- d$face_val_base[d$face_mult == 3]
+d$face_mult_10[d$face_mult == 10] <- d$face_val_base[d$face_mult == 10]
+
+d$house_mult_01[d$house_mult == 0.1] <- d$house_val_base[d$house_mult == 0.1]
+d$house_mult_05[d$house_mult == 0.5] <- d$house_val_base[d$house_mult == 0.5]
+d$house_mult_1[d$house_mult == 1] <- d$house_val_base[d$house_mult == 1]
+d$house_mult_2[d$house_mult == 2] <- d$house_val_base[d$house_mult == 2]
+d$house_mult_3[d$house_mult == 3] <- d$house_val_base[d$house_mult == 3]
+d$house_mult_10[d$house_mult == 10] <- d$house_val_base[d$house_mult == 10]
+
+glm_fit_v2 <- glmer(choice ~ face_mult_01 + face_mult_05 + face_mult_1 + face_mult_2 + face_mult_3 + face_mult_10
+                 + house_mult_01 + house_mult_05 + house_mult_1 + house_mult_2 + house_mult_3 + house_mult_10
+                 + (1|subject),
+                 data = d,
+                 family = binomial("logit"),
+                 glmerControl(optimizer="bobyqa",
+                 optCtrl = list(maxfun = 100000))
+                 )
+summary(glm_fit_v2)
+
+# This seems to take forever, necessary??
+glm_fit_2 <- glmer(choice ~ face_mult_01 + face_mult_05 + face_mult_1 + face_mult_2 + face_mult_3 + face_mult_10
+                 + house_mult_01 + house_mult_05 + house_mult_1 + house_mult_2 + house_mult_3 + house_mult_10
+                 + (1|subject) + (face_mult_01 + face_mult_05 + face_mult_1 + face_mult_2 + face_mult_3 + face_mult_10
+                 + house_mult_01 + house_mult_05 + house_mult_1 + house_mult_2 + house_mult_3 + house_mult_10|subject),
+                 data = d,
+                 family = binomial("logit"),
+                 glmerControl(optimizer="bobyqa",
+                 optCtrl = list(maxfun = 100000))
+                 )
+summary(glm_fit_2)
+
+
+# PLOTS
+sjp.glmer(glm_fit, type = "fe")
+
+sjp.glmer(glm_fit,
+          type = "ri.slope",
+          facet.grid = FALSE)
+sjp.glmer(glm_fit,
+          facet.grid = FALSE,
+          sort.est = "sort.all",
+          y.offset = .4)
+
+lattice::dotplot(ranef(glm_fit))
+
+sjp.glmer(glm_fit,
+          type = "ri.pc",
+          show.se = TRUE)
+```
+
+
+
+
+### COMPARE WEIGHTING ACROSS BOTH STUDIES
+```{r}
+# Build dataframe
+library(plyr)
+ce_fe_v2 = fixef(glm_fit_v2)
+se_fe_v2 = se.fixef(glm_fit_v2)
+ce_fe_v1 = fixef(glm_fit_v1)
+se_fe_v1 = se.fixef(glm_fit_v1)
+
+#v2
+mult_weights_v2_df <- data.frame(coefficient = ce_fe_v2)
+mult_weights_v2_df$se <- se_fe_v2
+mult_weights_v2_df$version = 2
+
+#v1
+mult_weights_v1_df <- data.frame(coefficient = ce_fe_v1)
+mult_weights_v1_df$se <- se_fe_v1
+mult_weights_v1_df$version = 1
+
+# Combine v1 and v2
+mult_weights_df = rbind(mult_weights_v2_df, mult_weights_v1_df)
+# Column for multiplier weight
+mult_weights_df$multiplier = c(NA,0.1,0.5,1,2,3,10, 0.1,0.5,1,2,3,10, NA, 1,2,3,1,2,3)
+# Column that combines version and attribute
+mult_weights_df$version_attribute = c(NA,'2 face','2 face','2 face','2 face','2 face','2 face',
+                                      '2 house','2 house','2 house','2 house','2 house','2 house',
+                                      NA,'1 face','1 face','1 face','1 house','1 house','1 house')
+# Remove intercept values
+mult_weights_df = mult_weights_df[complete.cases(mult_weights_df),]
+
+
+#--------------#
+# PLOT
+#--------------#
+
+ggplot(data = mult_weights_df,
+       aes(x = multiplier, y = coefficient, group=factor(version_attribute), colour=factor(version_attribute))) + 
+  geom_point() + 
+  geom_line() +
+  geom_errorbar(aes(ymin = coefficient-se, ymax = coefficient+se)) + 
+  labs(x = "Weight (Multiplier Value)", y = "Coefficient") +
+  scale_x_continuous(breaks = seq(0,max(mult_weights_df$multiplier),1)) +
+  scale_y_continuous(breaks = seq(0,max(mult_weights_df$coefficient)+0.5,1)) +
+  theme_minimal()+
+  guides(colour=guide_legend("Study\nVersion\n& Attribute")) +
+  theme(axis.title.x=element_text(size=17),
+        axis.title.y = element_text(size = 17))
+  ggtitle("Fixations by Absolute Net Value")
+  
+setwd("../../../../06_PRESENTATIONS/2018_SANS/Plots/")
+ggsave("Weighting_Coefficients.pdf", width = 18, height = 12, units = "cm")
+
+```
+
+
+
+
+# ACCURACY DATA
+
+```{r}
+# Import data
+v3_acc = read.csv('../Data/v3_accuracy.csv')
+```
+
+```{r}
+# Create error column
+v3_acc$house_error = abs(v3_acc$house_value_actual - v3_acc$house_value_guess)
+
+# Accuracy
+mean(v3_acc$house_error)
+mean(v3_acc$house_error[abs(v3_acc$house_value_actual) < 0.10])
+mean(v3_acc$house_error[abs(v3_acc$house_value_actual) < 0.25])
+mean(v3_acc$house_error[abs(v3_acc$house_value_actual) > 0.25 & abs(v3_acc$house_value_actual) < 0.50])
+mean(v3_acc$house_error[abs(v3_acc$house_value_actual) > 0.50 & abs(v3_acc$house_value_actual) < 0.75])
+mean(v3_acc$house_error[abs(v3_acc$house_value_actual) > 0.75])
+
+# RT
+mean(v3_acc$house_guess_rt)
+mean(v3_acc$house_guess_rt[abs(v3_acc$house_value_actual) < 0.10])
+mean(v3_acc$house_guess_rt[abs(v3_acc$house_value_actual) < 0.25])
+mean(v3_acc$house_guess_rt[abs(v3_acc$house_value_actual) > 0.25 & abs(v3_acc$house_value_actual) < 0.50])
+mean(v3_acc$house_guess_rt[abs(v3_acc$house_value_actual) > 0.50 & abs(v3_acc$house_value_actual) < 0.75])
+mean(v3_acc$house_guess_rt[abs(v3_acc$house_value_actual) > 0.75])
+```
+
+
+
+# INDIVIDUAL DIFFERENCE
+## QUESTIONNAIRES 
+```{r plot-gpa-effort, echo=FALSE}
+
+d <- v3
+
+#import individual measure data
+im <- read.csv("../v3/inquisit.csv")
+
+#mean RT and Final earnings by subject
+subject_means <- group_by(d, subject) %>%
+  dplyr::summarize(rt = mean(rt, na.rm = T), 
+                   finalEarnings = mean(final_earnings, na.rm = T), 
+                   accuracy = mean(correct, na.rm=T),
+                   fixations = mean(fix_num, na.rm=T))
+
+subject_means <- merge(subject_means, im, by = "subject")
+subject_means
+
+### GGPLOT REGRESSION FUNC if not loaded ##
+ggplotRegression <- function (fit) {
+  require(ggplot2)
+  ggplot(fit$model, aes_string(x=names(fit$model)[2], y=names(fit$model)[1])) +
+    geom_point() +
+    stat_smooth(method = "lm", col = "red") +
+    ggtitle("Testing") +
+    labs(title = paste(title, "\n\nAdj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                       "Intercept =",signif(fit$coef[[1]], 5),
+                       "Slope =",signif(fit$coef[[2]], 5),
+                       "P =",signif(summary(fit)$coef[2,4], 5)))
+}
+
+title = "GPA vs Performance"
+ggplotRegression(lm(accuracy~gpa, data = subject_means))
+
+title = "Self-Reported Effort vs Performance"
+ggplotRegression(lm(accuracy~effort_level, data = subject_means))
+
+title = "Decision Regret Freq. vs Performance"
+ggplotRegression(lm(accuracy~decision_regret_frequency, data = subject_means))
+
+title = "Guessing Freq. vs Performance"
+ggplotRegression(lm(accuracy~guessing_frequency, data = subject_means))
+
+# Box Plots
+
+datac <- summarySEwithin(subject_means, measurevar="accuracy", withinvars=c("payment_belief"), idvar="subject")
+
+ggplot(datac, aes(x=payment_belief, y=accuracy, fill=payment_belief)) +
+    geom_bar(position=position_dodge(.9), colour="black", stat="identity") +
+    geom_errorbar(position=position_dodge(.9), width=.25, aes(ymin=accuracy-ci, ymax=accuracy+ci)) +
+    coord_cartesian(ylim=c(0.8,0.9)) +
+    labs(y = "Accuracy", x = "Difficulty (net value)") +
+    scale_x_discrete(labels=c("1" = "Easy (>=0.5)", "2" = "Difficult (<0.5)")) +    
+    scale_y_continuous(breaks=seq(0,1,0.1)) +
+    theme_bw() +
+    theme(axis.title.x=element_text(size=18),
+        axis.title.y = element_text(size = 18)) +
+    scale_fill_brewer(palette="Pastel2") +
+    guides(fill=guide_legend(title="Difference\nbetween\nMultipliers"))
+
+#T.Test Means of Subjects
+t.test(subject_means$accuracy[subject_means$payment_belief=='Yes'], subject_means$accuracy[subject_means$payment_belief=='No'])
+
+
+title = "nBack_values_DV vs Performance"
+ggplotRegression(lm(accuracy~ payment_belief , data = subject_means))
+
+```
+## STROOP
+## N-BACK
+
+# FUNCTIONS
+
+## FUNCTIONS for SUMMARY STATS
+### From: http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)/#Helper%20functions
+
+```{r}
+## Norms the data within specified groups in a data frame; it normalizes each
+## subject (identified by idvar) so that they have the same mean, within each group
+## specified by betweenvars.
+##   data: a data frame.
+##   idvar: the name of a column that identifies each subject (or matched subjects)
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   betweenvars: a vector containing names of columns that are between-subjects variables
+##   na.rm: a boolean that indicates whether to ignore NA's
+normDataWithin <- function(data=NULL, idvar, measurevar, betweenvars=NULL,
+                           na.rm=FALSE, .drop=TRUE) {
+    library(plyr)
+
+    # Measure var on left, idvar + between vars on right of formula.
+    data.subjMean <- ddply(data, c(idvar, betweenvars), .drop=.drop,
+     .fun = function(xx, col, na.rm) {
+        c(subjMean = mean(xx[,col], na.rm=na.rm))
+      },
+      measurevar,
+      na.rm
+    )
+
+    # Put the subject means with original data
+    data <- merge(data, data.subjMean)
+
+    # Get the normalized data in a new column
+    measureNormedVar <- paste(measurevar, "_norm", sep="")
+    data[,measureNormedVar] <- data[,measurevar] - data[,"subjMean"] +
+                               mean(data[,measurevar], na.rm=na.rm)
+
+    # Remove this subject mean column
+    data$subjMean <- NULL
+
+    return(data)
+}
+
+## Summarizes data, handling within-subjects variables by removing inter-subject variability.
+## It will still work if there are no within-S variables.
+## Gives count, un-normed mean, normed mean (with same between-group mean),
+##   standard deviation, standard error of the mean, and confidence interval.
+## If there are within-subject variables, calculate adjusted values using method from Morey (2008).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   betweenvars: a vector containing names of columns that are between-subjects variables
+##   withinvars: a vector containing names of columns that are within-subjects variables
+##   idvar: the name of a column that identifies each subject (or matched subjects)
+##   na.rm: a boolean that indicates whether to ignore NA's
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+
+summarySEwithin <- function(data=NULL, measurevar, betweenvars=NULL, withinvars=NULL,
+                            idvar=NULL, na.rm=FALSE, conf.interval=.95, .drop=TRUE) {
+
+  # Ensure that the betweenvars and withinvars are factors
+  factorvars <- vapply(data[, c(betweenvars, withinvars), drop=FALSE],
+    FUN=is.factor, FUN.VALUE=logical(1))
+
+  if (!all(factorvars)) {
+    nonfactorvars <- names(factorvars)[!factorvars]
+    message("Automatically converting the following non-factors to factors: ",
+            paste(nonfactorvars, collapse = ", "))
+    data[nonfactorvars] <- lapply(data[nonfactorvars], factor)
+  }
+
+  # Get the means from the un-normed data
+  datac <- summarySE(data, measurevar, groupvars=c(betweenvars, withinvars),
+                     na.rm=na.rm, conf.interval=conf.interval, .drop=.drop)
+
+  # Drop all the unused columns (these will be calculated with normed data)
+  datac$sd <- NULL
+  datac$se <- NULL
+  datac$ci <- NULL
+
+  # Norm each subject's data
+  ndata <- normDataWithin(data, idvar, measurevar, betweenvars, na.rm, .drop=.drop)
+
+  # This is the name of the new column
+  measurevar_n <- paste(measurevar, "_norm", sep="")
+
+  # Collapse the normed data - now we can treat between and within vars the same
+  ndatac <- summarySE(ndata, measurevar_n, groupvars=c(betweenvars, withinvars),
+                      na.rm=na.rm, conf.interval=conf.interval, .drop=.drop)
+
+  # Apply correction from Morey (2008) to the standard error and confidence interval
+  #  Get the product of the number of conditions of within-S variables
+  nWithinGroups    <- prod(vapply(ndatac[,withinvars, drop=FALSE], FUN=nlevels,
+                           FUN.VALUE=numeric(1)))
+  correctionFactor <- sqrt( nWithinGroups / (nWithinGroups-1) )
+
+  # Apply the correction factor
+  ndatac$sd <- ndatac$sd * correctionFactor
+  ndatac$se <- ndatac$se * correctionFactor
+  ndatac$ci <- ndatac$ci * correctionFactor
+
+  # Combine the un-normed means with the normed results
+  merge(datac, ndatac)
+}
+
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA's
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group's data frame, return a vector with
+    # N, mean, and sd
+    datac <- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the "mean" column    
+    datac <- rename(datac, c("mean" = measurevar))
+
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+
+    return(datac)
+}
+```
+
+```{r}
+mean(v1$rt)
+mean(v3$rt)
+mean(v3$`2_fixation`)
+mean(v1$`2_fixation`, na.rm = TRUE)
+```
+
+
+
+
+
+```{r}
+str(glm_1)
+```
+

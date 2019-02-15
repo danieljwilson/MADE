@@ -1,0 +1,12 @@
+"0","```r
+```r
+# Figure out histogram bin size, based on equal numbers of observations
+library(Hmisc) # cut2
+
+S_M$valBin <- as.numeric(cut2(S_M$summedVal, g=15))
+table(S_M$valBin)
+
+S_M$valBinAmt <- cut2(S_M$summedVal, g=15)
+table(S_M$valBinAmt)
+```
+```"

@@ -1,0 +1,4 @@
+test.thisRepN,test.thisTrialN,test.thisN,test.thisIndex,houseImage,faceValue,word,houseValue,morph,faceImage,percent,exitKeys.keys,exitKeys.rt,exitKeys_2.keys,exitKeys_2.rt,exitKeys_3.keys,exitKeys_3.rt,date,frameRate,expName,session,participant,
+,,,,,,,,,,,down,0.77113199234,,,,,2017_Mar_02_1409,59.7922107544,test02_TestSegment,001,,
+,,,,,,,,,,,,,lcommand,18.3202691078,,,2017_Mar_02_1409,59.7922107544,test02_TestSegment,001,,
+,,,,,,,,,,,,,,,escape,2.15279102325,2017_Mar_02_1409,59.7922107544,test02_TestSegment,001,,

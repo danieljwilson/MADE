@@ -1,0 +1,32 @@
+"0","```r
+```r
+# Create ID for each DF
+NS_M$id <- \Standard Mult.\
+NS_NM$id <- \Standard Non-Mult\
+S_M$id <- \Swap Mult.\
+S_NM$id <- \Swap Non-Mult\
+# Concat DFs
+common_cols <- intersect(colnames(S_M), colnames(S_NM))
+df1 = rbind(
+  S_NM[, common_cols], 
+  S_M[, common_cols]
+)
+common_cols <- intersect(colnames(NS_NM), colnames(NS_M))
+df2 = rbind(
+  NS_NM[, common_cols], 
+  NS_M[, common_cols]
+)
+common_cols <- intersect(colnames(df1), colnames(df2))
+df_all = rbind(
+  df1[, common_cols],
+  df2[, common_cols]
+)
+common_cols <- intersect(colnames(S_M), colnames(NS_M))
+df_mults = rbind(
+  S_M[, common_cols],
+  NS_M[, common_cols]
+)
+# Make DF ID Factor
+df_mults$id <- as.factor(df_mults$id)
+```
+```"

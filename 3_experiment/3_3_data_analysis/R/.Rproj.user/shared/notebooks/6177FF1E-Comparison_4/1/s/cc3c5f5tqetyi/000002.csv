@@ -1,0 +1,6 @@
+"0","```r
+```r
+df = mutate(S_M, cutmcsgg = cut_number(S_M$summedVal, n=15))
+ggplot(df, aes(x = cutmcsgg, y = )) + geom_bar() + ggtitle(\Histograms of PCS by sextile of MCS\)
+```
+```"

@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1550073565677.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3663636339",
+    "id" : "5B779E50",
+    "lastKnownWriteTime" : 1550097067,
+    "last_content_update" : 1550097067566,
+    "path" : "~/Documents/pCloud Synced/PhD/PROJECTS/17_MADE/03_CODE/MADE_niagara/analysis/R/old/v3/v3_Analyses.Rmd",
+    "project_path" : "old/v3/v3_Analyses.Rmd",
+    "properties" : {
+        "cursorPosition" : "135,0",
+        "last_setup_crc32" : "47833C231efe734b",
+        "scrollLine" : "104"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

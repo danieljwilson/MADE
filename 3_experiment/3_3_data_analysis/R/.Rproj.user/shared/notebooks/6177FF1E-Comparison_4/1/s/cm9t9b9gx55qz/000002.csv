@@ -1,0 +1,6 @@
+"0","```r
+```r
+# removes all variables but NOT functions
+rm(list = setdiff(ls(), lsf.str()))
+```
+```"

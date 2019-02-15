@@ -1,0 +1,4 @@
+word,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,vocal_RT,bad_baseline,filename,date,frameRate,expName,session,participant,
+cat,0,0,0,0,0.0,False,data/trial_000_cat.wav,2016_Oct_23_2206,60.4010604701,vvk,001,,
+cat,0,0,0,0,0.0,,data/trial_000_cat.wav,2016_Oct_23_2206,60.4010604701,vvk,001,,
+cat,0,0,0,0,,,,2016_Oct_23_2206,60.4010604701,vvk,001,,

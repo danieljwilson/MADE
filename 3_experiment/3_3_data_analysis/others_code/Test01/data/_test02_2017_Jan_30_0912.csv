@@ -1,0 +1,17 @@
+xPos,location,instr,congruence,yPos,corrAns,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,test_faceValue.thisRepN,test_faceValue.thisTrialN,test_faceValue.thisN,test_faceValue.thisIndex,houseImage,faceValue,word,houseValue,morph,faceImage,percent,key_resp_2.keys,key_resp_2.rt,key_resp_3.keys,key_resp_3.rt,key_resp_4.keys,key_resp_4.rt,key_resp_5.keys,key_resp_5.rt,key_resp_7.keys,key_resp_7.rt,key_resp_11.keys,key_resp_11.rt,key_resp_8.keys,key_resp_8.rt,date,frameRate,expName,session,participant,
+200,up_right,"Hello.
+
+In this experiment we are interested in how people make decisions.",consistent,200,h,0,0,0,0,,,,,,,,,,,,down,0.605632066727,,,,,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+200,up_right,The experiment should take about 90 minutes.,conflicting,200,s,0,1,1,1,,,,,,,,,,,,down,0.186457872391,,,,,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+200,up_right,"In the experiment, you will see images of faces and buildings that have different meanings.
+Some images are associated with winning money. Others are associated with losing money. 
+
+During this part, you will learn to associate different images with their appropriate outcomes.",consistent,200,s,0,2,2,2,,,,,,,,,,,,down,0.102602005005,,,,,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+200,up_right,You will then be tested to make sure that you have learned the values associated with the different faces and buildings.,conflicting,200,h,0,3,3,3,,,,,,,,,,,,down,0.13712310791,,,,,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+-200,up_left,"Make sure you pay attention as you learn about the images, since you will eventually be making choices about them in which you could end up winning or losing money.",consistent,200,h,0,4,4,4,,,,,,,,,,,,down,0.102829933167,,,,,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,down,0.369396209717,,,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,down,0.518625974655,,,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,down,0.38606095314,,,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,down,0.620231866837,,,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,down,0.150521993637,,,2017_Jan_30_0912,60.3620308034,test02,001,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,down,0.583899974823,2017_Jan_30_0912,60.3620308034,test02,001,,

@@ -1,0 +1,592 @@
+---
+title: "V4_Analysis"
+author: "Daniel J Wilson"
+date: "12/21/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-data Echo=FALSE}
+# LOAD TRIALS
+load("~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis/Data/v4_trials_clean.Rdata")
+# LOAD LEARNING
+#load("~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis/Data/v4_learning.Rdata")
+# LOAD INDIVIDUAL DIFF
+
+```
+
+## RT DISTRIBUTION
+```{r init-data-exploration Echo=FALSE}
+
+df = v4_trials_clean
+
+#find subject accruacy (uncleaned)
+accuracy = tapply(df$correct==1, df$participant, mean)
+
+#hists of rt based on congruent and incongruent trials
+hist(df[df$correct==1, ]$rt,
+   col=rgb(1,0,0,0.5), breaks=seq(0,15,0.1), ylim=c(0,225), xlab="RT", main = "RT vs Frequency")
+abline(v=median(df[df$correct==1, ]$rt), col="red")
+hist(df[df$correct==0, ]$rt,
+   col=rgb(0,0,1,0.5), breaks=seq(0,15,0.1), ylim=c(0,225), add=T)
+abline(v=median(df[df$correct==0, ]$rt), col="blue")
+
+legend("bottomright", c("Correct", "Incorrect"), fill=c(rgb(1,0,0,0.5), rgb(0,0,1,0.5)))
+legend("topright",
+       c(as.expression(bquote(Correct_Median == .(median(df[df$correct==1, ]$rt)))), as.expression(bquote(Incorrect_Median == .(median(df[df$correct==0, ]$rt))))),
+       col = c("red", "blue"),
+       lwd = c(2, 2, 1))
+
+x = df$rt[df$correct==1]
+y = df$rt[df$correct==0]
+t.test(x,y)
+```
+
+```{r plot-1 Echo=FALSE}
+df = v4_trials_clean
+#RT vs. Summed Value
+ggplot(df, aes(x=summed_val, y=rt)) +
+  geom_point(shape=1) +    # Use hollow circles
+  geom_smooth()  # Add a loess smoothed fit curve with confidence region
+```
+
+
+## BASIC PSYCHOMETRIC comparison
+
+```{r}
+# Figure out histogram bin size, based on equal numbers of observations
+library(Hmisc) # cut2
+
+d <- v4_trials_clean
+d$choice = as.numeric(d$accept_reject)
+
+# How many bins?
+numBins = 19 # same as Krajbich
+
+# SUMMED VAL
+d$valBin <- as.numeric(cut2(d$summed_val, g=numBins))
+d$valBinAmt <- cut2(d$summed_val, g=numBins)
+d$valBinCtr <- cut2(d$summed_val, g=numBins, levels.mean=TRUE)
+vals = as.numeric(as.character(unique(d$valBinCtr)))
+vals = sort(vals)
+
+# FOR RT
+subject_means_rt <- group_by(d, participant, valBinCtr) %>%
+  dplyr::summarize(rt = mean(rt, na.rm = T))
+subject_means_rt
+
+# FOR ACCURACY
+subject_means_acc <- group_by(d, participant, valBinCtr) %>%
+  dplyr::summarize(correct = mean(correct, na.rm = T))
+subject_means_acc
+
+# FOR CHOICE
+subject_means_choice <- group_by(d, participant, valBinCtr) %>%
+  dplyr::summarize(accept = mean(choice, na.rm = T))
+subject_means_choice
+
+# Create DF with all bins as columns
+# FOR RT
+subject_means_wide_rt <-
+  spread(subject_means_rt,
+         key = valBinCtr,
+         value = rt,
+         sep = "_")
+
+# FOR ACCURACY
+subject_means_wide_acc <-
+  spread(subject_means_acc,
+         key = valBinCtr,
+         value = correct,
+         sep = "_")
+
+# FOR CHOICE
+subject_means_wide_choice <-
+  spread(subject_means_choice,
+         key = valBinCtr,
+         value = accept,
+         sep = "_")
+
+# DF with mean and SD for each bin
+
+rt_x = sapply(subject_means_wide_rt, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+rt_x = t(rt_x)
+acc_x = sapply(subject_means_wide_acc, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+acc_x = t(acc_x)
+choice_x = sapply(subject_means_wide_choice, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+choice_x = t(choice_x)
+
+# MEANs
+rt_mean = numeric()
+acc_mean = numeric()
+choice_mean = numeric()
+for(i in 2:19){
+  rt_mean = c(rt_mean, rt_x[i,1][[1]])
+  acc_mean = c(acc_mean, acc_x[i,1][[1]])
+  choice_mean = c(choice_mean, choice_x[i,1][[1]])
+}
+
+# SDs
+rt_sd = numeric()
+acc_sd = numeric()
+choice_sd = numeric()
+for(i in 2:19){
+  rt_sd = c(rt_sd, rt_x[i,2][[1]])
+  acc_sd = c(acc_sd, acc_x[i,2][[1]])
+  choice_sd = c(choice_sd, choice_x[i,2][[1]])
+}
+
+# Create DF
+df = data.frame("val" = vals,
+                "rt_mean" = rt_mean, "rt_sd" = rt_sd,
+                "acc_mean" = acc_mean, "acc_sd" = acc_sd,
+                "choice_mean" = choice_mean, "choice_sd" = choice_sd)
+
+# Add SEs
+nVal = sqrt(length(unique(d$participant))) # calculate the denominator of the SE equation
+df$rt_se <- df$rt_sd/nVal
+df$acc_se <- df$acc_sd/nVal
+df$choice_se <- df$choice_sd/nVal
+
+#-----------#
+# PLOT      # 
+#-----------#
+
+# RT
+ggplot(data = df,aes(x = val,y = rt_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = rt_mean-rt_se,ymax = rt_mean+rt_se)) + 
+  labs(x = "Net Value", y = "Reaction Time (seconds)") +
+  theme_minimal() +
+  ggtitle("Mean Reaction Time by Net Value")
+  
+# ACCURACY
+ggplot(data = df,aes(x = val,y = acc_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = acc_mean-acc_se, ymax = acc_mean+acc_se)) + 
+  labs(x = "Net Value", y = "p(Correct)") +
+  theme_minimal() +
+  ggtitle("B") +
+  theme(plot.title = element_text(size=22))
+#  ggtitle("p(Correct) by Net Value ")
+
+# CHOICE
+ggplot(data = df,aes(x = val,y = choice_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = choice_mean-choice_se, ymax = choice_mean+choice_se)) + 
+  labs(x = "Net Value", y = "p(Accept)") +
+  scale_x_continuous(breaks = seq(-3,3,0.5)) +
+  theme_minimal() +
+  theme(axis.title.x=element_text(size=17),
+        axis.title.y = element_text(size = 17))
+  #ggtitle("A") +
+  #theme(plot.title = element_text(size=22))
+
+setwd("/Users/djw/Dropbox/PHD/PRESENTATIONS/2017_SNE/Plots")
+ggsave("Prob.png", width = 19, height = 12, units = "cm")
+
+#T-TEST for trials
+#t.test(subject_means_wide$flip_1, subject_means_wide$flip_2, paired = TRUE)
+```
+
+## PSCYHOMETRICS continued (abs val for rt and fix)
+
+```{r}
+# ABS Val
+d <- v4_trials_clean
+
+d$absValBin <- as.numeric(cut2(abs(d$summed_val), g=9))
+d$absValBinAmt <- cut2(abs(d$summed_val), g=9)
+d$absValBinCtr <- cut2(abs(d$summed_val), g=9, levels.mean=TRUE)
+absVals = as.numeric(as.character(unique(d$absValBinCtr)))
+absVals = sort(absVals)
+
+# Abs Val RT
+abs_subject_means_rt <- group_by(d, participant, absValBinCtr) %>%
+  dplyr::summarize(rt = mean(rt, na.rm = T))
+abs_subject_means_rt
+
+# FOR Fixations
+abs_subject_means_fix <- group_by(d, participant, absValBinCtr) %>%
+  dplyr::summarize(fixations = mean(fix_num, na.rm = T))
+abs_subject_means_fix
+
+# Create DF with all bins as columns
+# FOR RT
+abs_subject_means_wide_rt <-
+  spread(abs_subject_means_rt,
+         key = absValBinCtr,
+         value = rt,
+         sep = "_")
+
+# FOR ACCURACY
+abs_subject_means_wide_fix <-
+  spread(abs_subject_means_fix,
+         key = absValBinCtr,
+         value = fixations,
+         sep = "_")
+
+# DF with mean and SD for each bin
+
+rt_x = sapply(abs_subject_means_wide_rt, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+rt_x = t(rt_x)
+fix_x = sapply(abs_subject_means_wide_fix, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+fix_x = t(fix_x)
+
+rt_x
+
+rt_mean = numeric()
+fix_mean = numeric()
+for(i in 2:9){
+  rt_mean = c(rt_mean, rt_x[i,1][[1]])
+  fix_mean = c(fix_mean, fix_x[i,1][[1]])
+}
+
+rt_sd = numeric()
+fix_sd = numeric()
+for(i in 2:9){
+  rt_sd = c(rt_sd, rt_x[i,2][[1]])
+  fix_sd = c(fix_sd, fix_x[i,2][[1]])
+}
+
+
+df = data.frame("abs_val" = absVals, "rt_mean" = rt_mean, "rt_sd" = rt_sd, "fix_mean" = fix_mean, "fix_sd" = fix_sd)
+nVal = sqrt(length(unique(d$participant))) # calculate the denominator of the SE equation
+df$rt_se <- df$rt_sd/nVal
+df$fix_se <- df$fix_sd/nVal
+df
+
+#-----------#
+# PLOT      # 
+#-----------#
+
+# RT
+ggplot(data = df,aes(x = abs_val,y = rt_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = rt_mean-rt_se,ymax = rt_mean+rt_se)) + 
+  labs(x = "Absolute Net Value ($)", y = "Reaction Time (s)") +
+  scale_x_continuous(breaks = seq(0,3,0.5)) +
+  scale_y_continuous(breaks = seq(2.2,5.0,0.2)) +
+  theme_minimal()+
+  theme(axis.title.x=element_text(size=18),
+        axis.title.y = element_text(size = 18))
+  ggtitle("Mean Reaction Time by Absolute Net Value")
+  
+# FIXATIONS
+ggplot(data = df,aes(x = abs_val,y = fix_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = fix_mean-fix_se, ymax = fix_mean+fix_se)) + 
+  labs(x = "Absolute Net Value ($)", y = "Fixation Count") +
+  scale_x_continuous(breaks = seq(0,3,0.5)) +
+  scale_y_continuous(breaks = seq(2.4,4.0,0.1)) +
+  theme_minimal()+
+  theme(axis.title.x=element_text(size=17),
+        axis.title.y = element_text(size = 17))
+  ggtitle("Fixations by Absolute Net Value ")
+
+# SAVE PLOTS  
+#setwd("/Users/djw/Dropbox/PHD/PRESENTATIONS/2017_SNE/Plots")
+#ggsave("RT.png", width = 19, height = 12, units = "cm")
+  
+
+```
+
+## RT vs VALUE by paradigm
+```{r}
+
+# set WD
+setwd("~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis")
+load("Data/S_M.Rdata")
+
+#RT vs. Summed Value
+ggplot() +
+  geom_smooth(aes(x=summedVal, y=rt, group = factor(id), colour = factor(id)), df_mults) +
+  #geom_smooth(aes(x=summedVal, y=correct, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-3, 3))  +
+  scale_x_continuous(name="Net Value ($)", seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = "Reaction Time (s)") +
+  scale_color_manual(labels = c("Secondary", "Primary"), values = c("blue", "red")) +
+  guides(colour=guide_legend("Study")) +
+  ggtitle("B") +
+  theme_minimal()+
+  theme(legend.position="none")
+
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth()  # Add a loess smoothed fit curve with confidence region
+```
+
+### P(accept) v NET VALUE
+### RT v abs(NET VALUE)
+### # of Swaps v abs(NET VALUE)
+
+
+
+
+## FIRST FIXATION DWELL TIME by Mult and Net Value
+
+```{r}
+df = v4_trials_clean
+df$first_val_base = df$first_val/df$first_mult
+df$second_val_base = df$second_val/df$second_mult
+
+# COLLAPSED OVER MULTS
+# First fix dwell time
+abs_subject_means_rt_1 <- group_by(df, participant, first_val_base) %>%
+  dplyr::summarize(first_fix = mean(`1_fixation`, na.rm = T))
+
+# Second fix dwell time
+# New df - cut out trials where second fix is FINAL fix
+df_second <- df[df$fix_num>2,]
+abs_subject_means_rt_2 <- group_by(df, participant, second_val_base) %>%
+  dplyr::summarize(second_fix = mean(`2_fixation`, na.rm = T))
+
+# Create DF with all bins as columns
+# FOR RT
+abs_subject_means_wide_rt_1 <-
+  spread(abs_subject_means_rt_1,
+         key = first_val_base,
+         value = first_fix,
+         sep = "_")
+
+abs_subject_means_wide_rt_2 <-
+  spread(abs_subject_means_rt_2,
+         key = second_val_base,
+         value = second_fix,
+         sep = "_")
+
+# DF with mean and SD for each bin
+
+first = sapply(abs_subject_means_wide_rt_1, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+first = t(first)
+second = sapply(abs_subject_means_wide_rt_2, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+second = t(second)
+
+first_mean = numeric()
+for(i in 2:10){
+  first_mean = c(first_mean, first[i,1][[1]])
+}
+second_mean = numeric()
+for(i in 2:10){
+  second_mean = c(second_mean, second[i,1][[1]])
+}
+
+first_sd = numeric()
+for(i in 2:10){
+  first_sd = c(first_sd, first[i,2][[1]])
+}
+second_sd = numeric()
+for(i in 2:10){
+  second_sd = c(second_sd, second[i,2][[1]])
+}
+
+fix_vals = sort(unique(df$first_val_base))
+
+df = data.frame("values" = first_fix_vals, "first_mean" = first_mean, "first_sd" = first_sd,
+                "second_mean" = second_mean, "second_sd" = second_sd)
+nVal = sqrt(length(unique(d$participant))) # calculate the denominator of the SE equation
+df$first_se <- df$first_sd/nVal
+df$second_se <- df$second_sd/nVal
+df
+
+#-----------#
+# PLOT      # 
+#-----------#
+
+# RT FIRST FIX
+ggplot(data = df,aes(x = values,y = first_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = first_mean-first_se,ymax = first_mean+first_se)) + 
+  labs(x = "Base Value ($)", y = "Fixation Time (s)") +
+  scale_x_continuous(breaks = seq(-3,3,0.25)) +
+  scale_y_continuous(breaks = seq(1.0,2.2,0.05)) +
+  theme_minimal()+
+  theme(axis.title.x=element_text(size=18),
+        axis.title.y = element_text(size = 18)) + 
+  ggtitle("First Fixation: Collapsed Across Mults")
+
+# RT SECOND FIX
+ggplot(data = df,aes(x = values,y = second_mean)) + 
+  geom_point() + 
+  #geom_line() +
+  geom_errorbar(aes(ymin = second_mean-second_se,ymax = second_mean+second_se)) + 
+  labs(x = "Base Value ($)", y = "Fixation Time (s)") +
+  scale_x_continuous(breaks = seq(-3,3,0.25)) +
+  scale_y_continuous(breaks = seq(1.0,2.2,0.05)) +
+  theme_minimal()+
+  theme(axis.title.x=element_text(size=18),
+        axis.title.y = element_text(size = 18)) + 
+  ggtitle("Second Fixation: Collapsed Across Mults")
+```
+
+## Separated By Multiplier
+```{r}
+# SEPARATED BY MULT
+df = v4_trials_clean
+df$first_val_base = df$first_val/df$first_mult
+
+# First fix
+first <- ggplot(df, aes(x = first_val_base, y = `1_fixation`, colour = factor(first_mult))) +
+  stat_summary(fun.y = "mean", geom = "line") +
+  
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Attribute Base Value ($)")+
+  scale_y_continuous(name = "Attribute Dwell Time (s)")+
+  ggtitle("First Fixation: Separated by Multiplier")
+first
+
+# Second fix
+df$second_val_base = df$second_val/df$second_mult
+df_second <- df[df$fix_num>2,]
+
+second <- ggplot(df_second, aes(x = second_val_base, y = `2_fixation`, colour = factor(first_mult))) +
+  stat_summary(fun.y = "mean", geom = "line") +
+  
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Attribute Base Value ($)")+
+  scale_y_continuous(name = "Attribute Dwell Time (s)")+
+  ggtitle("Second Fixation: Separated by Multiplier")
+second
+
+
+#-----------#
+# PLOT      # 
+#-----------#
+# 
+# # RT FIRST FIX
+# ggplot(data = df,aes(x = values,y = first_mean)) + 
+#   geom_point() + 
+#   #geom_line() +
+#   geom_errorbar(aes(ymin = first_mean-first_se,ymax = first_mean+first_se)) + 
+#   labs(x = "Base Value ($)", y = "Fixation Time (s)") +
+#   scale_x_continuous(breaks = seq(-3,3,0.25)) +
+#   scale_y_continuous(breaks = seq(1.0,2.2,0.05)) +
+#   theme_minimal()+
+#   theme(axis.title.x=element_text(size=18),
+#         axis.title.y = element_text(size = 18)) + 
+#   ggtitle("First Fixation: Collapsed Across Mults")
+# 
+# # RT SECOND FIX
+# ggplot(data = df,aes(x = values,y = second_mean)) + 
+#   geom_point() + 
+#   #geom_line() +
+#   geom_errorbar(aes(ymin = second_mean-second_se,ymax = second_mean+second_se)) + 
+#   labs(x = "Base Value ($)", y = "Fixation Time (s)") +
+#   scale_x_continuous(breaks = seq(-3,3,0.25)) +
+#   scale_y_continuous(breaks = seq(1.0,2.2,0.05)) +
+#   theme_minimal()+
+#   theme(axis.title.x=element_text(size=18),
+#         axis.title.y = element_text(size = 18)) + 
+#   ggtitle("Second Fixation: Collapsed Across Mults")
+  
+#RT vs. Summed Value First Fixation
+ggplot() +
+  geom_smooth(aes(x=jitter(first_val_base), y=`1_fixation`, group = factor(first_mult), colour = factor(first_mult)), n=17, df) +
+  #geom_smooth(aes(x=summedVal, y=logRT, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-1.1, 1.1))  +
+  #ggtitle("First Fixation Timing vs Total Value")
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth(n = 17) +  # Add a loess smoothed fit curve with confidence region
+  theme_minimal()+
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Attribute Weighted Value ($)", seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = "Attribute Dwell Time (s)")+
+  theme(axis.title.x=element_text(size=14),
+        axis.title.y = element_text(size = 14))
+#  theme(legend.position="none")
+
+#RT vs. Summed Value First Fixation
+ggplot() +
+  geom_smooth(aes(x=jitter(second_val_base), y=`2_fixation`, group = factor(second_mult), colour = factor(second_mult)), n=17, df_second) +
+  #geom_smooth(aes(x=summedVal, y=logRT, colour = "flip"), subset(total_M_clean3, flip==1)) +
+  coord_cartesian(xlim = c(-1.1, 1.1))  +
+  #ggtitle("First Fixation Timing vs Total Value")
+  #geom_point(shape=1) +    # Use hollow circles
+  geom_smooth(n = 17) +  # Add a loess smoothed fit curve with confidence region
+  theme_minimal()+
+  guides(colour=guide_legend("Multiplier \nCondition")) +
+  scale_x_continuous(name="Attribute Weighted Value ($)", seq(-3,3,0.5), limits = c(-3,3))+
+  scale_y_continuous(name = "Attribute Dwell Time (s)")+
+  theme(axis.title.x=element_text(size=14),
+        axis.title.y = element_text(size = 14))
+  #theme(legend.position="none")
+```
+
+# MODELS
+
+```{r}
+library(lme4)
+library(nlme)
+library(effects)
+library(car)
+
+
+# Reload Data
+d <- v4_trials_clean
+d$participant <- factor(d$participant)
+d$choice <- as.numeric(d$accept_reject)
+# Bias to weigh the face value more than justified?
+fit <- glmer(choice ~ face_val_total * total_fix_face_0 + house_val_total * total_fix_house_1 + (1 + face_val_total * total_fix_face_0 + house_val_total * total_fix_house_1 | participant), family = binomial("logit"), data = d)
+summary(fit)
+
+# turn into dataframe
+fitDf <- as.data.frame.matrix(coef(summary(fit))) 
+names(fitDf)[names(fitDf) == "Std. Error"] <- 'se'
+names(fitDf)[names(fitDf) == "z value"] <- 'z'
+names(fitDf)[names(fitDf) == "Pr(>|z|)"] <- 'p'
+fitDf$'Fixed Effects'<-rownames(fitDf)
+
+# remove intercept
+fitDf = fitDf[-1,]
+fitDf[1,5] = "WFV"
+fitDf[2,5] = "TFD"
+fitDf[3,5] = "WHV"
+fitDf[4,5] = "THD"
+fitDf[5,5] = "WFV:TFD"
+fitDf[6,5] = "WHV:THD"
+
+# *'s for significance
+fitDf$star <- ""
+fitDf$star[fitDf$p <= .05]  <- "*"
+fitDf$star[fitDf$p <= .01]  <- "**"
+fitDf$star[fitDf$p <= .001] <- "***"
+
+# Bar Plot
+positions <- c("WFV", "WHV", "TFD", "THD", "WFV:TFD", "WHV:THD")
+
+ggplot(fitDf, aes(`Fixed Effects`, z, fill=`Fixed Effects`)) + 
+  geom_bar(stat = "identity", width = 0.5) + 
+  geom_errorbar(aes(ymin=z-se, ymax=z+se), width=0.4) +
+  geom_text(aes(label=star), colour="black", vjust=0, size=6) +
+  scale_x_discrete(limits = positions) +
+  theme_minimal() +
+  theme(axis.title.x=element_text(size=14),
+      axis.title.y = element_text(size = 14))+
+  theme(legend.position="none")
+
+
+```
+
+## FIXATION DURATION
+### First Fixation (by multiplier and underlying value)
+### Second Fixation (by multiplier and underlying value)
+### Middle Fixations (by multiplier and underlying value)
+
+## BIAS
+### Choice biased by fixation time?
+### Choice biased by last fixation?
+
+## ACCURACY
+### Accuracy v. Net Value (by multiplier)
+### Accuracy v. Base Value (by multiplier)
+
+## LEARNING EFFECTS ON PERFORMANCE
+### FASTER LEARNERS: Accuracy? Speed? Swaps?

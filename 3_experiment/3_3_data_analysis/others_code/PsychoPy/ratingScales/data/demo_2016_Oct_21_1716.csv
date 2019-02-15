@@ -1,0 +1,5 @@
+thing,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,rating.response,rating.rt,date,frameRate,expName,session,participant,
+thing-1,0,0,0,0,7,11.981,2016_Oct_21_1716,59.834774409,ratingScaleBuilder,001,demo,
+thing-2,0,1,1,1,4,2.22,2016_Oct_21_1716,59.834774409,ratingScaleBuilder,001,demo,
+thing-3,0,2,2,2,3,0.47,2016_Oct_21_1716,59.834774409,ratingScaleBuilder,001,demo,
+thing-4,0,3,3,3,5,1.589,2016_Oct_21_1716,59.834774409,ratingScaleBuilder,001,demo,

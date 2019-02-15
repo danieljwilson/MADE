@@ -1,0 +1,35 @@
+"0","# Figure out histogram bin size, based on equal numbers of observations"
+"0","library(Hmisc) # cut2"
+"2","Loading required package: lattice
+"
+"2","Loading required package: survival
+"
+"2","Loading required package: Formula
+"
+"2","
+Attaching package: ‘Hmisc’
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    src, summarize
+
+"
+"2","The following objects are masked from ‘package:base’:
+
+    format.pval, units
+
+"
+"0","d <- swap_v2_clean"
+"0","# How many bins?"
+"0","numBins = 19 # same as Krajbich"
+"0","# SUMMED VAL"
+"0","d$valBin <- as.numeric(cut2(d$summed_val, g=numBins))"
+"0","d$valBinAmt <- cut2(d$summed_val, g=numBins)"
+"0","d$valBinCtr <- cut2(d$summed_val, g=numBins, levels.mean=TRUE)"
+"0","vals = as.numeric(as.character(unique(d$valBinCtr)))"
+"0","vals = sort(vals)"
+"0","# FOR RT"
+"0","subject_means_rt <- group_by(d, participant, valBinCtr) %>%"
+"0","  dplyr::summarize(rt = mean(rt, na.rm = T))"
+"0","subject_means_rt"

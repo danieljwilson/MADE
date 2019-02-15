@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1550073462559.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1566688822",
+    "id" : "942D7B7A",
+    "lastKnownWriteTime" : 1550073538,
+    "last_content_update" : 1550073538356,
+    "path" : "~/Documents/pCloud Synced/PhD/PROJECTS/17_MADE/03_CODE/MADE_niagara/analysis/R/data_overview.R",
+    "project_path" : "data_overview.R",
+    "properties" : {
+        "cursorPosition" : "12,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

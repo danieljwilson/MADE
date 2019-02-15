@@ -1,0 +1,18 @@
+"0","df <- swap_v2_clean"
+"0","swap_v2_clean$mult_num"
+"1","NULL
+"
+"0","#RT vs. Summed Value"
+"0","ggplot() +"
+"0","  geom_smooth(aes(x=summed_val, y=rt, group = factor(mult_num), colour = factor(mult_num)), df) +"
+"0","  #geom_smooth(aes(x=summedVal, y=rt, colour = ""flip""), subset(df, flip==1)) +"
+"0","  coord_cartesian(xlim = c(-3, 3))  +"
+"0","  #ggtitle(""RT vs. Summed Val"")"
+"0","  #geom_point(shape=1) +    # Use hollow circles"
+"0","  geom_smooth() +  # Add a loess smoothed fit curve with confidence region"
+"0","  theme_minimal()+"
+"0","  guides(colour=guide_legend(""Multiplier \nCondition"")) +"
+"0","  scale_x_continuous(name=""Net Value ($)"", seq(-3,3,0.5), limits = c(-3,3))+"
+"0","  scale_y_continuous(name = ""Reaction Time (s)"")"
+"2","Error in factor(mult_num) : object 'mult_num' not found
+"

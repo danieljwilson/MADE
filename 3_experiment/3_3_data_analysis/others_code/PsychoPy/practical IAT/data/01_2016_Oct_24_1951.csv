@@ -1,0 +1,8 @@
+color,word,condition,key,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,key_resp_2.keys,key_resp_2.rt,Instr_key_resp_1x.keys,Instr_key_resp_1x.rt,Response_1.keys,Response_1.corr,Response_1.rt,Keys_1.keys,Keys_1.corr,Keys_1.rt,session,participant,frameRate,expName,date,side,
+,,,,,,,,space,9.67235779762,,,,,,,,,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
+,,,,,,,,,,space,21.3135199547,,,,,,,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
+skyblue,Inventive,creative,e,0,0,0,2,,,,,e,1,0.297822952271,None,0,,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
+skyblue,Practical,practical,i,0,1,1,6,,,,,i,1,2.18603992462,None,0,,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
+skyblue,Constructive,practical,i,0,2,2,11,,,,,i,1,2.00278282166,None,0,,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
+skyblue,Creative,creative,e,0,3,3,0,,,,,e,1,0.684667825699,None,0,,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
+skyblue,Applied,practical,i,0,4,4,7,,,,,e,0,1.5031311512,i,1,9.40648198128,001,01,60.2714750065,IAT,2016_Oct_24_1951,1,
