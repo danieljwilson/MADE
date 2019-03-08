@@ -1,0 +1,4 @@
+date, psychopy_version, exp_version, face_version, house_version, subject, block, trial, image, actual_val, input_val, rt, error, total_error, accuracy, min_accuracy
+2019_Feb_19_2342,3.0.2,3.0.2,0,1,999,1,0,faceMorph082.jpg,0.64,0.75,3.518,0.11,0.11,89.00,70.00
+2019_Feb_19_2342,3.0.2,3.0.2,0,1,999,1,1,houseMorph080.jpg,-0.60,-0.80,3.685,0.20,0.31,84.50,70.00
+2019_Feb_19_2342,3.0.2,3.0.2,0,1,999,1,2,faceMorph005.jpg,-0.90,-0.80,3.973,0.10,0.41,86.33,70.00

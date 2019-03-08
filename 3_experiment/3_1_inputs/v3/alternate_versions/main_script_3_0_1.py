@@ -1,6 +1,6 @@
 """
 Multi Attribute Decision Making Task v3
-2019.02.19
+2019.02.11
 
 Author: Daniel J Wilson
 Contact: daniel.j.wilson@gmail.com
@@ -25,7 +25,7 @@ import webbrowser as wb
 import os
 
 # MAKE SURE THE UTILS VERSION MATCHES THE EXPERIMENT VERSION
-import utils_v3_0_2 as utils    # file with custom experiment functions
+import utils_v3_0_1 as utils    # file with custom experiment functions
 
 
 ###########
@@ -43,7 +43,7 @@ task_trial_num = 404
 recall_trial_num = 50
 
 # experiment details
-expInfo = {'subject':999, 'exp_version': '3.0.2', 'psychopy_version': '3.0.2', 'start_section': 1, 'monitor': 'testMonitor'}
+expInfo = {'subject':999, 'exp_version': '3.0.1', 'psychopy_version': '3.0.2', 'start_section': 1, 'monitor': 'testMonitor'}
 expInfo['dateStr'] = data.getDateStr()  # add the current time
 qualtricsLink = 'https://utorontopsych.az1.qualtrics.com/jfe/form/SV_e8nqiYUuDWJ8P7T'
 

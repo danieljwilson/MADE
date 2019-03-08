@@ -3,8 +3,8 @@
 """
 Multi Attribute Decision Making Task: Utility File
 
-v3.0.2: 	accuracy incentive
-			.1-10 multipliers
+v3.0.1:     cumulative earnings incentive
+            .1-10 multipliers
 
 Author: Daniel J Wilson
 Contact: daniel.j.wilson@gmail.com
@@ -256,11 +256,11 @@ def instructions_1(win, Stimuli):
     show(win)
     # test explanation2
     visual.TextStim(win, pos=[0, 0], height=0.8,
-                    text='There will be 25 trials.\n\nYour goal is to achieve an accuracy rate of 70% or better.\n\n(This means that you are within $0.30 of the actual value on average)').draw()
+                    text='There will be 20 trials.\n\nYour goal is to achieve an accuracy rate of 80% or better.\n\n(This means that you are within $0.20 of the actual value on average)').draw()
     show(win)
     # test explanation3
     visual.TextStim(win, pos=[0, 0], height=0.8,
-                    text='Not to worry, you have 5 rounds to achieve this accuracy level.').draw()
+                    text='Not to worry, you have 4 rounds to achieve this accuracy level.').draw()
     show(win)
     # test explanation4
     visual.TextStim(win, pos=[0, 0], height=1.5,
@@ -626,10 +626,8 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
     else:
         print('trial_type must be either practice or task...')
         core.quit()
-    # init accuracy
-    accuracy = 0.
-    total_trial_count = 0
-    correct_count = 0
+    # init earnings
+    earnings = 0
     # timing object
     trialClock = core.Clock()
 
@@ -643,7 +641,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
 
     dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
     dataFile.write(
-        'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, trial, rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, payout\n')
+        'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, trial, rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, earnings\n')
 
     #--------------#
     # Run trials   #
@@ -851,8 +849,10 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                     response = 1
                     if summed_val_total >= 0.:
                         correct_response = 1
+                        earnings = earnings + summed_val_total
                     else:
                         correct_response = 0
+                        earnings = earnings + summed_val_total
 
                 elif len(keystroke)>0 and keystroke[0] == 'down':
                     total_rt = trialClock.getTime() - start_rt
@@ -864,176 +864,108 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                     response = 0
                     if summed_val_total <= 0.:
                         correct_response = 1
+                        earnings+=0
                     else:
                         correct_response = 0
-            
-            # update trial counter
-            total_trial_count +=1
-            # update accuracy and indicate if CORRECT
+                        earnings = earnings + summed_val_total
+
+            # give feedback
             if correct_response == 1:
-                correct_count +=1
-                accuracy = correct_count/total_trial_count
                 feedback = visual.TextStim(win, units='norm', pos=[0, 0], height=.2, color=(0,1,0),
                                            text='CORRECT')
             elif correct_response == 0:
-                accuracy = correct_count/total_trial_count
                 feedback = visual.TextStim(win, units='norm', pos=[0, 0], height=.2, color=(1,0,0),
                                            text='INCORRECT')
 
             feedback.draw()
             bottom_bar.draw()
-            visual.TextStim(win, units='norm', pos=[0.0, -.95], height=0.06,
+            visual.TextStim(win, units='norm', pos=[0, -.95], height=0.06,
                             text='Press SPACE to continue...').draw()
             win.flip()
             event.waitKeys(keyList=['space'])
 
-            # show accuracy rate/earnings
+            # save values
+            if trial_type == 'practice':
+                for fix_num in range(len(fix_array)):
+                    dataFile.write(
+                        '%s,%s,%s,%i,%i,%s,%i,%i,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%.2f\n' % (expInfo['dateStr'],
+                                                                                                                              expInfo['psychopy_version'],
+                                                                                                                              expInfo['exp_version'],
+                                                                                                                              expInfo['face_version'],
+                                                                                                                              expInfo['house_version'],
+                                                                                                                              expInfo['left'],
+                                                                                                                              expInfo['subject'],
+                                                                                                                              block,
+                                                                                                                              trial,
+                                                                                                                              total_rt,
+                                                                                                                              response,
+                                                                                                                              correct_response,
+                                                                                                                              summed_val_total,
+                                                                                                                              Rand_Stimuli.face[image_index[trial]],
+                                                                                                                              face_val_base,
+                                                                                                                              face_mult,
+                                                                                                                              face_val_total,
+                                                                                                                              Rand_Stimuli.house[image_index[trial]],
+                                                                                                                              house_val_base,
+                                                                                                                              house_mult,
+                                                                                                                              house_val_total,
+                                                                                                                              fix_num,
+                                                                                                                              rt_array[fix_num],
+                                                                                                                              fix_array[fix_num],
+                                                                                                                              earnings))
+
+            if trial_type == 'task':
+                for fix_num in range(len(fix_array)):
+                    dataFile.write(
+                        '%s,%s,%s,%i,%i,%s,%i,%i,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%.2f\n' % (expInfo['dateStr'],
+                                                                                                                              expInfo['psychopy_version'],
+                                                                                                                              expInfo['exp_version'],
+                                                                                                                              expInfo['face_version'],
+                                                                                                                              expInfo['house_version'],
+                                                                                                                              expInfo['left'],
+                                                                                                                              expInfo['subject'],
+                                                                                                                              block,
+                                                                                                                              trial,
+                                                                                                                              total_rt,
+                                                                                                                              response,
+                                                                                                                              correct_response,
+                                                                                                                              summed_val_total,
+                                                                                                                              Rand_Stimuli.face[trial],
+                                                                                                                              face_val_base,
+                                                                                                                              face_mult,
+                                                                                                                              face_val_total,
+                                                                                                                              Rand_Stimuli.house[trial],
+                                                                                                                              house_val_base,
+                                                                                                                              house_mult,
+                                                                                                                              house_val_total,
+                                                                                                                              fix_num,
+                                                                                                                              rt_array[fix_num],
+                                                                                                                              fix_array[fix_num],
+                                                                                                                              earnings))
+
             if trial_type == 'practice':
                 # report actual summed val
                 visual.TextStim(win, units='norm', pos=[0, 0.5], height=0.1, color=(-1),
                                 text='Actual value was: ${:.2f}'.format(summed_val_total)).draw()
 
                 # randomize position that these are shown (which first) by resetting pos after...
-                visual.TextStim(win, units='norm', pos=[0, -0.07], height=0.08,
-                                text='House Value: {} x ${:.2f} = ${:.2f}'.format(house_mult, house_val_base, house_val_total)).draw()
-                visual.TextStim(win, units='norm', pos=[0,0.07], height=0.08,
-                                text='Face Value: {} x ${:.2f} = ${:.2f}'.format(face_mult, face_val_base, face_val_total)).draw()
+                house_val_text = visual.TextStim(win, units='norm', pos=[0, -0.07], height=0.08,
+                                           text='House Value: {} x ${:.2f} = ${:.2f}'.format(house_mult, house_val_base, house_val_total)).draw()
+                face_val_text = visual.TextStim(win, units='norm', pos=[0,0.07], height=0.08,
+                                           text='Face Value: {} x ${:.2f} = ${:.2f}'.format(face_mult, face_val_base, face_val_total)).draw()
             if trial_type == 'task':
-                ### draw background color based on accuracy rate
-                if accuracy < 0.55:
-                    color = (-1, -.2, -.2)
-                    payout = 0
-                    accuracy_pos = -0.875
-                elif accuracy < 0.65:
-                    color = (-0.6, -.2, -.2)
-                    payout = 2
-                    accuracy_pos = -0.75 + (accuracy-0.55) * 2.5
-                elif accuracy <0.75:
-                    color = (-0.3, -.2, -.2)
-                    payout = 5
-                    accuracy_pos = -0.5 + (accuracy-0.65) * 2.5
-                elif accuracy < 0.85:
-                    color = (0., -0.2, -0.2)
-                    payout=9
-                    accuracy_pos = -0.25 + (accuracy-0.75) * 2.5
-                elif accuracy < 0.95:
-                    color = (0.2, -0.2, -0.2)
-                    payout=14
-                    accuracy_pos = 0. + (accuracy-0.85) * 2.5
-                elif accuracy < 0.99:
-                    color = (0.4, -0.2, -0.2)
-                    payout=20
-                    accuracy_pos = 0.25 + (accuracy-0.95) * 6.25
-                elif accuracy < 1.:
-                    color = (0.6, -0.2, -0.2)
-                    payout=30
-                    accuracy_pos = 0.625
-                elif accuracy == 1.:
-                    color = (0.8, -0.2, -0.2)
-                    payout = 50
-                    accuracy_pos = 0.875
-
-                visual.Rect(win, units='norm', width=2, height=2,
-                            pos=[0,0], color=color).draw()
-                # bottom bar
-                bottom_bar.draw()
-                visual.TextStim(win, units='norm', pos=[0.6, -.95], height=0.06,
-                                text='Press SPACE to continue...').draw()
-                # draw graduated color bar with payment amounts on it
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.875], color=(-1, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85,-0.875], height=0.16, color=(1), text='$0').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.625], color=(-0.6, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85,-0.625], height=0.16, color=(1), text='$2').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.375], color=(-0.3, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85,-0.375], height=0.16, color=(1), text='$5').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.125], color=(0., -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85,-0.125], height=0.16, color=(1), text='$9').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.125], color=(0.2, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85, 0.125], height=0.16, color=(1), text='$14').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.375], color=(0.4, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85, 0.375], height=0.16, color=(1), text='$20').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.625], color=(0.6, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85, 0.625], height=0.16, color=(1), text='$30').draw()
-                visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.875], color=(0.8, -.2, -.2)).draw()
-                visual.TextStim(win, units='norm', pos=[-0.85, 0.875], height=0.16, color=(1), text='$50').draw()
-                
-            ### show color bar and their position (i.e. how close
-            ### to the next "level")
-    
                 # report actual summed val
-                visual.TextStim(win, units='norm', pos=[0.5, 0], height=0.12, color=(-1),
-                                text='Actual value:\n${:.2f}'.format(summed_val_total)).draw()
-                # report accuracy
-                visual.Rect(win, units='norm', pos=[-0.3, accuracy_pos], width=0.7 , height=0.12,
-                            color=-1).draw()   
-                visual.Rect(win, units='norm', pos=[-0.6, accuracy_pos], width=0.2 , height=0.015,
-                            color=-1).draw()        # background rect
-                visual.TextStim(win, units='norm', pos=[-0.3, accuracy_pos], height=0.10, color=(1),
-                                text='Accuracy: {:.1f}%'.format(accuracy*100)).draw()
+                visual.TextStim(win, units='norm', pos=[0, 0], height=0.12, color=(-1),
+                                text='Actual value: ${:.2f}'.format(summed_val_total)).draw()
+                # report actual summed val
+                visual.Rect(win, units='norm', pos=[0,-0.5], width=0.7, height=0.15,
+                            color=-1).draw()
+                visual.TextStim(win, units='norm', pos=[0, -0.5], height=0.12, color=(1),
+                                text='Earnings: ${:.2f}'.format(earnings)).draw()
 
-            # save values
-            if trial_type == 'practice':
-                for fix_num in range(len(fix_array)):
-                    dataFile.write(
-                        '%s,%s,%s,%i,%i,%s,%i,%i,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%i\n' % (expInfo['dateStr'],
-                                                                                                                                expInfo['psychopy_version'],
-                                                                                                                                expInfo['exp_version'],
-                                                                                                                                expInfo['face_version'],
-                                                                                                                                expInfo['house_version'],
-                                                                                                                                expInfo['left'],
-                                                                                                                                expInfo['subject'],
-                                                                                                                                block,
-                                                                                                                                trial,
-                                                                                                                                total_rt,
-                                                                                                                                response,
-                                                                                                                                correct_response,
-                                                                                                                                summed_val_total,
-                                                                                                                                Rand_Stimuli.face[image_index[trial]],
-                                                                                                                                face_val_base,
-                                                                                                                                face_mult,
-                                                                                                                                face_val_total,
-                                                                                                                                Rand_Stimuli.house[image_index[trial]],
-                                                                                                                                house_val_base,
-                                                                                                                                house_mult,
-                                                                                                                                house_val_total,
-                                                                                                                                fix_num,
-                                                                                                                                rt_array[fix_num],
-                                                                                                                                fix_array[fix_num],
-                                                                                                                                len(fix_array),
-                                                                                                                                accuracy,
-                                                                                                                                0))
-
-            if trial_type == 'task':
-                for fix_num in range(len(fix_array)):
-                    dataFile.write(
-                        '%s,%s,%s,%i,%i,%s,%i,%i,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%i\n' % (expInfo['dateStr'],
-                                                                                                                                expInfo['psychopy_version'],
-                                                                                                                                expInfo['exp_version'],
-                                                                                                                                expInfo['face_version'],
-                                                                                                                                expInfo['house_version'],
-                                                                                                                                expInfo['left'],
-                                                                                                                                expInfo['subject'],
-                                                                                                                                block,
-                                                                                                                                trial,
-                                                                                                                                total_rt,
-                                                                                                                                response,
-                                                                                                                                correct_response,
-                                                                                                                                summed_val_total,
-                                                                                                                                Rand_Stimuli.face[trial],
-                                                                                                                                face_val_base,
-                                                                                                                                face_mult,
-                                                                                                                                face_val_total,
-                                                                                                                                Rand_Stimuli.house[trial],
-                                                                                                                                house_val_base,
-                                                                                                                                house_mult,
-                                                                                                                                house_val_total,
-                                                                                                                                fix_num,
-                                                                                                                                rt_array[fix_num],
-                                                                                                                                fix_array[fix_num],
-                                                                                                                                len(fix_array),
-                                                                                                                                accuracy,
-                                                                                                                                payout))
-
+            bottom_bar.draw()
+            visual.TextStim(win, units='norm', pos=[0, -.95], height=0.06,
+                            text='Press SPACE to continue...').draw()
             win.flip()
             event.waitKeys(keyList=['space'])
         # end of block
@@ -1049,10 +981,10 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
         #################### CONGRATS ####################
         # complete
         visual.TextStim(win, pos=[0, 0], height=0.9,
-                        text='Well done, you have completed the main task!\n\nYou earned a total of ${:.2f}.'.format(payout)).draw()
+                        text='Well done, you have completed the main task!\n\nYou earned a total of ${:.2f}/15 = ${:.2f}.'.format(earnings, earnings/15)).draw()
         show(win)
     dataFile.close()
-    return(accuracy)
+    return(earnings)
 
 ####################
 # 3.1 INSTRUCTIONS #
@@ -1088,32 +1020,10 @@ def instructions_3(win, task_trial_num, blocks):
     show(win)
     # winning_money2
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='We will will be paid based on your level of accuracy.\n\nThis is how the payment works:\n\nAccuracy   Payment\n0-55%       $0     \n55-65%     $2     \n65-75%     $5     \n75-85%     $9     \n85-95%     $14    \n95-99%     $20    \n99-100%   $30    \n100%        $50    ').draw()
+                    text='We will keep track of your total earnings.\n\nYou will be paid at the end at the rate of 1:15.\n\nThis means if you earned $150, for example, you would be paid $10.').draw()
     show(win)
 
     # winning_money3
-    visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='Note that you will receive feedback after each trial where the background color will match your current winnings level.').draw()
-    # draw graduated color bar with payment amounts on it
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.875], color=(-1, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85,-0.875], height=0.16, color=(1), text='$0').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.625], color=(-0.6, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85,-0.625], height=0.16, color=(1), text='$2').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.375], color=(-0.3, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85,-0.375], height=0.16, color=(1), text='$5').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85,-0.125], color=(0., -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85,-0.125], height=0.16, color=(1), text='$9').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.125], color=(0.2, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85, 0.125], height=0.16, color=(1), text='$14').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.375], color=(0.4, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85, 0.375], height=0.16, color=(1), text='$20').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.625], color=(0.6, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85, 0.625], height=0.16, color=(1), text='$30').draw()
-    visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.875], color=(0.8, -.2, -.2)).draw()
-    visual.TextStim(win, units='norm', pos=[-0.85, 0.875], height=0.16, color=(1), text='$50').draw()
-    show(win)
-
-    # winning_money4
     visual.TextStim(win, pos=[0, 0], height=0.9,
                     text='Top players have earned over $20.').draw()
     show(win)
@@ -1127,6 +1037,18 @@ def instructions_3(win, task_trial_num, blocks):
                     text='When you are ready to START press any key to begin...').draw()
     show(win)
 
+"""
+Better to do cumulative amount or "levels"?
+    (change screen color and show bonus amount)
+    0.55 or below = $0 bonus
+    0.55-0.65 = $2 bonus
+    0.65-0.75 = $5 bonus
+    0.75-0.85 = $9 bonus
+    0.85-0.95 = $14 bonus
+    0.95-1 = $20 bonus
+
+    This also makes all tries of equal 'value'...
+"""
 
 ############
 # 3.2 TASK #
