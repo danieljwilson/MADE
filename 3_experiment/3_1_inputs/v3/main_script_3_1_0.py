@@ -59,12 +59,14 @@ else:
 currentMonitor = expInfo['monitor']
 
 # set number of each type of trials
+# debug
 if expInfo['subject']==999 or expInfo['subject']==998:
 	learn_trial_num = 3
 	practice_trial_num = 3
 	practice_tp_trial_num = 3
 	task_trial_num = 16
 	recall_trial_num = 3
+# experiment
 else:
 	learn_trial_num = 25
 	practice_trial_num = 25
