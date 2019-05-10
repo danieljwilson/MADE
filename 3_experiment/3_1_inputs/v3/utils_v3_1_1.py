@@ -4,7 +4,7 @@
 Multi Attribute Decision Making Task: Utility File
 2019.03.12
 
-v3.1.0: 	time pressure response
+v3.1.1: 	time pressure response v2
             accuracy incentive
 			.1-10 multipliers
 

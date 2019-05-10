@@ -20,8 +20,8 @@ void setup() {
   size(1200, 844, P2D);
 
   // Load the images
-  a = loadImage("CFD-WF-026-002-N_small.jpg");
-  b = loadImage("CFD-WF-224-099-N_small.jpg");
+  a = loadImage("CFD-WM-249-239-N_small.jpg");
+  b = loadImage("CFD-WM-228-065-N_small.jpg");
 
   // Create the morphing object
   morph = new Morpher(a, b);
@@ -60,7 +60,7 @@ void draw() {
   // Morph an amount between 0 and 1 (0 being all of A, 1 being all of B)
     morph.drawMorph(img_count/float(100));
     PImage morphImage = get(0,a.height,a.width,a.height);
-    morphImage.save("attractive_unattractive/face_f_u_1_" + nf(img_count,3) + ".jpg");
+    morphImage.save("attractive_unattractive/face_m_u_1_" + nf(img_count,3) + ".jpg");
     img_count+=1;
   }
   else {
