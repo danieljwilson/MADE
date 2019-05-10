@@ -1162,7 +1162,7 @@ def instructions_4(win, recall_trial_num):
     #################### RECALL ####################
     # section
     visual.TextStim(win, pos=[0, 0], units='norm', height=0.28, color=-1,
-                    text='Section 4').draw()
+                    text='Section 4:\n\nRecall').draw()
     show(win)
     # explain1
     visual.TextStim(win, pos=[0, 0], height=0.9,
@@ -1189,7 +1189,42 @@ def instructions_4(win, recall_trial_num):
 # 5.1 INSTRUCTIONS #
 ####################
 
+
 def instructions_5(win):
+    """
+    Function to show instructions for Rating section of MADE.
+
+    Keyword arguments:
+    win -- these are the window/monitor parameters that were set up earlier
+    """
+
+    #################### RECALL ####################
+    # section
+    visual.TextStim(win, pos=[0, 0], units='norm', height=0.28, color=-1,
+                    text='Section 5:\n\nRating').draw()
+    show(win)
+    # explain1
+    visual.TextStim(win, pos=[0, 0], height=0.9,
+                    text='In this section you will rate all 4 faces for attractiveness.').draw()
+    show(win)
+    # winning_money2
+    visual.TextStim(win, pos=[0, 0], height=0.9,
+                    text='Ready to begin?').draw()
+    show(win)
+
+
+##############
+# 5.2 RATE #
+##############
+
+def face_eval(win):
+    return(0)
+
+####################
+# 6.1 INSTRUCTIONS #
+####################
+
+def instructions_6(win):
     """
     Function to show instructions upon completion of MADE.
 

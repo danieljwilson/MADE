@@ -47,6 +47,7 @@ qualtricsLink = 'https://utorontopsych.az1.qualtrics.com/jfe/form/SV_e8nqiYUuDWJ
 #-----------------------#
 
 # present a dialogue to change params
+# sex needs to be entered as 'male' or 'female'
 dlg = gui.DlgFromDict(expInfo, title='MADE v3', fixed=['dateStr', 'exp_version', 'psychopy_version'], order=['subject', 'monitor', 'start_section', 'sex', 'exp_version', 'psychopy_version'])
 if dlg.OK:
     filename = 'subject_data/' + str(expInfo['subject']) + '/' + 'Params.pickle'
@@ -58,7 +59,15 @@ else:
 # set current monitor
 currentMonitor = expInfo['monitor']
 
-# set number of each type of trials# debugif expInfo['subject']==999 or expInfo['subject']==998:    learn_trial_num = 3    practice_trial_num = 3    task_trial_num = 16    recall_trial_num = 3# experimentelse:
+# set number of each type of trials
+# debug
+if expInfo['subject']==999 or expInfo['subject']==998:
+    learn_trial_num = 3
+    practice_trial_num = 3
+    task_trial_num = 16
+    recall_trial_num = 3
+# experiment
+else:
     learn_trial_num = 25
     practice_trial_num = 25
     task_trial_num = 404
@@ -186,12 +195,32 @@ if start_section ==4:
     utils.test_vals(win, expInfo, Rand_Stimuli, task_trial_num, trial_num=recall_trial_num, max_blocks=1, min_accuracy=1, trial_type='recall')
     start_section+=1
 
-##############
-# 5 Feedback #
-##############
+############
+# 5 Rating #
+############
 
 if start_section ==5:
+    
+    # need to pull final earnings from csv in case we start from this section
+    #------------------#
+    # 5.1 Instructions #
+    #------------------#
+
     utils.instructions_5(win)
+
+    #-------------------------#
+    # 5.2 Rate Attractiveness #
+    #-------------------------#
+
+    utils.face_eval(win)
+    start_section+=1
+
+##############
+# 6 Feedback #
+##############
+
+if start_section ==6:
+    utils.instructions_6(win)
 
 event.waitKeys()
 # wait for participant to respond
