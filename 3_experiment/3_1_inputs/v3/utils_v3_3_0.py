@@ -1197,7 +1197,7 @@ def instructions_5(win):
     Keyword arguments:
     win -- these are the window/monitor parameters that were set up earlier
     """
-
+    event.clearEvents()
     #################### RECALL ####################
     # section
     visual.TextStim(win, pos=[0, 0], units='norm', height=0.28, color=-1,
@@ -1217,8 +1217,64 @@ def instructions_5(win):
 # 5.2 RATE #
 ##############
 
-def face_eval(win):
-    return(0)
+def face_eval(win, expInfo, Stimuli):
+	
+	fileName = 'subject_data/' + str(expInfo['subject']) + '/' + str(expInfo['subject']) + '_rating_' + expInfo['dateStr']
+
+	dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
+	dataFile.write('date, psychopy_version, exp_version, unattractive_face_version, attractive_face_version, subject, image, image_val, own_rating, other_rating\n')
+
+	rate_stims = namedtuple('rate_stims', 'image, value')
+	rate_stims.image = [Stimuli.unattractive[0], Stimuli.unattractive[100], Stimuli.attractive[0], Stimuli.attractive[100]]
+	rate_stims.value = [Stimuli.unattractive_val[0], Stimuli.unattractive_val[100], Stimuli.attractive_val[0], Stimuli.attractive_val[100]]
+
+	vals = np.arange(len(rate_stims.image))
+	np.random.shuffle(vals)
+
+	for i in vals:
+		face = visual.ImageStim(win, image='images/attractive_unattractive/' + rate_stims.image[i], 
+			pos=(0, 0), size=7, units='deg')
+
+		myRatingScale = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
+		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
+		txt = "How attractive do you find his person?"
+		myItem = visual.TextStim(win, text=txt, pos=(0,0.7), height=.08, units='norm')
+
+		# show & update until a response has been made
+		while myRatingScale.noResponse:
+		    myItem.draw()
+		    myRatingScale.draw()
+		    face.draw()
+		    win.flip()
+		own_rating = myRatingScale.getRating()
+
+		myRatingScale2 = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
+		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
+
+		txt = "How attractive do you think OTHER PEOPLE, on average, would find his person?"
+		myItem = visual.TextStim(win, text=txt, pos=(0,0.7), height=.08, units='norm')
+
+		# show & update until a response has been made
+		while myRatingScale2.noResponse:
+		    myItem.draw()
+		    myRatingScale2.draw()
+		    face.draw()
+		    win.flip()
+		other_rating = myRatingScale2.getRating()
+
+
+		dataFile.write('%s,%s,%s,%i,%i,%i,%s,%.2f,%i,%i\n' % (expInfo['dateStr'],
+			expInfo['psychopy_version'],
+			expInfo['exp_version'],
+			expInfo['unattractive_version'],
+			expInfo['attractive_version'],
+			expInfo['subject'],
+			rate_stims.image[i],
+			rate_stims.value[i],
+			own_rating,
+			other_rating))
+	dataFile.close()
+
 
 ####################
 # 6.1 INSTRUCTIONS #

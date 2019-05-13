@@ -1,7 +1,7 @@
 """
 Multi Attribute Decision Making Task v3.3.0
 Attractive/Unattractive faces
-2019.05.08
+2019.05.13
 
 Author: Daniel J Wilson
 Contact: daniel.j.wilson@gmail.com
@@ -61,7 +61,7 @@ currentMonitor = expInfo['monitor']
 
 # set number of each type of trials
 # debug
-if expInfo['subject']==999 or expInfo['subject']==998:
+if expInfo['subject']>=900:
     learn_trial_num = 3
     practice_trial_num = 3
     task_trial_num = 16
@@ -104,7 +104,7 @@ Stimuli, Rand_Stimuli = utils.init_stims_weights(expInfo)
 #-------------------#
 
 # small for debug (subject 999), otherwise fullscreen
-if expInfo['subject'] == 999:
+if expInfo['subject'] >= 950:
     win = visual.Window([800,600],allowGUI=True,
                     monitor=currentMonitor, units='deg')
 else:
@@ -212,7 +212,7 @@ if start_section ==5:
     # 5.2 Rate Attractiveness #
     #-------------------------#
 
-    utils.face_eval(win)
+    utils.face_eval(win, expInfo, Stimuli)
     start_section+=1
 
 ##############

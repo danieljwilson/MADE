@@ -2,6 +2,9 @@
 // Based on: https://ccrma.stanford.edu/~jacobliu/368Report/
 // Daniel Shiffman
 
+// What version/images?
+String version = "m_a_1";
+
 // Two images
 PImage a;
 PImage b;
@@ -17,15 +20,16 @@ float x = 100;
 int img_count = 0;
 
 void setup() {
-  size(1200, 844, P2D);
+  size(844, 844, P2D);
 
   // Load the images
-  a = loadImage("CFD-WM-249-239-N_small.jpg");
-  b = loadImage("CFD-WM-228-065-N_small.jpg");
+  a = loadImage("am_01.jpg");
+  b = loadImage("am_02.jpg");
 
   // Create the morphing object
   morph = new Morpher(a, b);
-  morph.loadPoints();
+  //comment out the line below the first time you load the images
+  morph.loadPoints(version);
 }
 
 void draw() {
@@ -60,7 +64,7 @@ void draw() {
   // Morph an amount between 0 and 1 (0 being all of A, 1 being all of B)
     morph.drawMorph(img_count/float(100));
     PImage morphImage = get(0,a.height,a.width,a.height);
-    morphImage.save("attractive_unattractive/face_m_u_1_" + nf(img_count,3) + ".jpg");
+    morphImage.save("attractive_unattractive/face_" + version + "_" + nf(img_count,3) + ".jpg");
     img_count+=1;
   }
   else {
@@ -100,10 +104,10 @@ void draw() {
 // Save or load points based on key presses
 void keyPressed() {
   if (key == 's') {
-    morph.savePoints();
+    morph.savePoints(version);
   } 
   else if (key == 'l') {
-    morph.loadPoints();
+    morph.loadPoints(version);
   }
 }
 

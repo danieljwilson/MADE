@@ -18,7 +18,7 @@ class Morpher {
   // The two images
   PImage imgA;
   PImage imgB;
-
+  
   Morpher(PImage imgA_, PImage imgB_) {
     imgA = imgA_;
     imgB = imgB_;
@@ -165,8 +165,8 @@ class Morpher {
   }
 
 
-  void savePoints() {
-    PrintWriter pw = createWriter("data/points.txt");
+  void savePoints(String version) {
+    PrintWriter pw = createWriter("data/" + version + "points.txt");
     for (Pair p : pairs) {
       String s = p.a.x + "," + p.a.y + "," + p.b.x + "," + p.b.y;
       pw.println(s);
@@ -175,9 +175,9 @@ class Morpher {
     pw.close();
   }
 
-  void loadPoints() {
+  void loadPoints(String version) {
     pairs.clear();
-    String[] lines = loadStrings("data/points.txt");
+    String[] lines = loadStrings("data/" + version + "points.txt");
     for (int i = 0; i < lines.length; i++) {
       float[] vals = float(split(lines[i], ","));
       addPair(new PVector(vals[0], vals[1]), new PVector(vals[2], vals[3]));
