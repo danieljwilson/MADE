@@ -1,0 +1,18 @@
+date, psychopy_version, exp_version, face_version, house_version, left, subject, block, condition, trial, rt, stim_start_rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, payout
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,0,0.653,weights,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,1,1.150,left,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,2,0.349,weights,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,3,1.501,right,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,4,0.149,weights,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,5,0.968,left,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,0,4.954,4.301,0,0,0.01,faceMorph039.jpg,-0.22,0.10,-0.02,houseMorph036.jpg,0.28,0.10,0.03,6,0.183,weights,7,0.00,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,1,4.287,3.587,0,1,-1.80,faceMorph071.jpg,0.42,0.10,0.04,houseMorph096.jpg,-0.92,2.00,-1.84,0,0.700,weights,5,0.50,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,1,4.287,3.587,0,1,-1.80,faceMorph071.jpg,0.42,0.10,0.04,houseMorph096.jpg,-0.92,2.00,-1.84,1,1.001,left,5,0.50,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,1,4.287,3.587,0,1,-1.80,faceMorph071.jpg,0.42,0.10,0.04,houseMorph096.jpg,-0.92,2.00,-1.84,2,0.283,weights,5,0.50,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,1,4.287,3.587,0,1,-1.80,faceMorph071.jpg,0.42,0.10,0.04,houseMorph096.jpg,-0.92,2.00,-1.84,3,1.534,right,5,0.50,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,1,4.287,3.587,0,1,-1.80,faceMorph071.jpg,0.42,0.10,0.04,houseMorph096.jpg,-0.92,2.00,-1.84,4,0.770,weights,5,0.50,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,2,3.183,2.700,0,1,-0.58,faceMorph002.jpg,-0.96,1.00,-0.96,houseMorph031.jpg,0.38,1.00,0.38,0,0.483,weights,5,0.67,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,2,3.183,2.700,0,1,-0.58,faceMorph002.jpg,-0.96,1.00,-0.96,houseMorph031.jpg,0.38,1.00,0.38,1,1.117,left,5,0.67,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,2,3.183,2.700,0,1,-0.58,faceMorph002.jpg,-0.96,1.00,-0.96,houseMorph031.jpg,0.38,1.00,0.38,2,0.167,weights,5,0.67,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,2,3.183,2.700,0,1,-0.58,faceMorph002.jpg,-0.96,1.00,-0.96,houseMorph031.jpg,0.38,1.00,0.38,3,1.251,right,5,0.67,0
+2019_May_14_1607,3.0.2,3.1.1,0,1,face,999,0,No Time Pressure,2,3.183,2.700,0,1,-0.58,faceMorph002.jpg,-0.96,1.00,-0.96,houseMorph031.jpg,0.38,1.00,0.38,4,0.166,weights,5,0.67,0

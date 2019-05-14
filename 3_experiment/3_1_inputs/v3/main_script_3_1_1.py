@@ -1,7 +1,12 @@
 """
 Multi Attribute Decision Making Task v3.1.1
 Time Pressure Version 2
-2019.04.09
+    - accuracy incentive
+    - multipliers: 0.1, 0.5, 1, 2, 3, 10
+    - three condition (low/hi/no time pressure)
+    - time starts from first stimulation selection
+    
+2019.05.14
 
 Author: Daniel J Wilson
 Contact: daniel.j.wilson@gmail.com
@@ -235,7 +240,6 @@ if start_section ==5:
     payout_2 = utils.task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num, task_trial_num, conditions, tp_low_rt, blocks=14, trial_type='task')
     start_section+=1
 
-
 ############
 # 6 RECALL #
 ############
@@ -256,12 +260,42 @@ if start_section ==6:
     utils.test_vals(win, expInfo, Rand_Stimuli, task_trial_num, trial_num=recall_trial_num, max_blocks=1, min_accuracy=1, trial_type='recall')
     start_section+=1
 
-##############
-# 7 FEEDBACK #
-##############
+############
+# 7 Rating #
+############
 
 if start_section ==7:
-    utils.instructions_7(win, payout_1, payout_2)
+    
+    #------------------#
+    # 7.1 Instructions #
+    #------------------#
+
+    utils.instructions_7(win)
+
+    #-------------------------#
+    # 7.2 Rate Attractiveness #
+    #-------------------------#
+
+    utils.face_eval(win, expInfo, Stimuli)
+    start_section+=1
+    
+
+##############
+# 8 FEEDBACK #
+##############
+
+if start_section ==8:
+    
+    try:
+        payout_1
+    except NameError:
+        payout_1 = 0
+    try:
+        payout_2
+    except NameError:
+        payout_2 = 0
+    
+    utils.instructions_8(win, payout_1, payout_2)
 
 event.waitKeys()
 # wait for participant to respond

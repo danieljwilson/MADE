@@ -666,7 +666,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
 
     dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
     dataFile.write(
-        'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, condition, trial, rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, payout\n')
+        'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, condition, trial, rt, stim_start_rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, payout\n')
 
     #--------------#
     # Run trials   #
@@ -829,6 +829,10 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                         rt_array.append(fix_rt)
                         previous = 'left'
                         fix_start_time = trialClock.getTime()
+                        # start clock with first stim selection
+                        if len(fix_array) == 1:
+                        	stim_start_time = trialClock.getTime()
+
                     while response[key.LEFT]:
                         # draw to screen
                         for s in STIM_LIST:
@@ -853,6 +857,9 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                         rt_array.append(fix_rt)
                         previous = 'right'
                         fix_start_time = trialClock.getTime()
+                        # start clock with first stim selection
+                        if len(fix_array) == 1:
+                        	stim_start_time = trialClock.getTime() 
 
                     while response[key.RIGHT]:
                         # draw to screen
@@ -868,6 +875,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                 # Choice
                 elif len(keystroke)>0 and keystroke[0] == 'up':
                     total_rt = trialClock.getTime() - start_rt
+                    stim_start_rt = trialClock.getTime() - stim_start_time
                     fix_rt = trialClock.getTime() - fix_start_time
                     fix_array.append(previous)
                     rt_array.append(fix_rt)
@@ -881,6 +889,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
 
                 elif len(keystroke)>0 and keystroke[0] == 'down':
                     total_rt = trialClock.getTime() - start_rt
+                    stim_start_rt = trialClock.getTime() - stim_start_time
                     fix_rt = trialClock.getTime() - fix_start_time
                     fix_array.append(previous)
                     rt_array.append(fix_rt)
@@ -1000,7 +1009,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
             if trial_type == 'practice':
                 for fix_num in range(len(fix_array)):
                     dataFile.write(
-                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%i\n' % (expInfo['dateStr'],
+                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%i\n' % (expInfo['dateStr'],
                                                                                                                                 expInfo['psychopy_version'],
                                                                                                                                 expInfo['exp_version'],
                                                                                                                                 expInfo['face_version'],
@@ -1011,6 +1020,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                                                                                                                                 condition,
                                                                                                                                 trial,
                                                                                                                                 total_rt,
+                                                                                                                                stim_start_rt,
                                                                                                                                 response,
                                                                                                                                 correct_response,
                                                                                                                                 summed_val_total,
@@ -1032,7 +1042,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
             if trial_type == 'task':
                 for fix_num in range(len(fix_array)):
                     dataFile.write(
-                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%i\n' % (expInfo['dateStr'],
+                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%i\n' % (expInfo['dateStr'],
                                                                                                                                 expInfo['psychopy_version'],
                                                                                                                                 expInfo['exp_version'],
                                                                                                                                 expInfo['face_version'],
@@ -1043,6 +1053,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                                                                                                                                 condition,
                                                                                                                                 trial,
                                                                                                                                 total_rt,
+                                                                                                                                stim_start_rt,
                                                                                                                                 response,
                                                                                                                                 correct_response,
                                                                                                                                 summed_val_total,
@@ -1061,8 +1072,8 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                                                                                                                                 accuracy,
                                                                                                                                 payout))
 
-            # add to rt Series object the latest rt
-            rt_cache[trial] = total_rt
+            # add to rt Series object the latest rt (based on stim onset)
+            rt_cache[trial] = stim_start_rt
 
             win.flip()
             event.waitKeys(keyList=['space'])
@@ -1158,7 +1169,7 @@ def instructions_3(win, task_trial_num, blocks):
 
     # trials1
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='You will start with just 2 blocks of trials, with {} trials in this block.\n\nAfter you have done these blocks, you will receive some additional instructions for the next blocks.'.format(int(task_trial_num/blocks))).draw()
+                    text='You will start with just 2 blocks of trials, with {} trials in each block.\n\nAfter you finish, you will receive additional instructions for the next blocks.'.format(int(task_trial_num/blocks))).draw()
     show(win)
     # start1
     visual.TextStim(win, pos=[0, 0], height=1.2,
@@ -1191,7 +1202,7 @@ def instructions_4_low(win, Stimuli, tp_rt):
     #################### INTRO ####################
     # section
     visual.TextStim(win, pos=[0, 0], units='norm', height=0.28, color=-1,
-                    text='Section 4:\n\nLow Time Pressure').draw()
+                    text='Section 4').draw()
     show(win)
     # explain_combo1
     visual.TextStim(win, pos=[0, 0], height=0.9,
@@ -1203,11 +1214,11 @@ def instructions_4_low(win, Stimuli, tp_rt):
     show(win)
     # explain_combo3
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='In low time pressure trials you will have a total of {0:.2f} seconds to make a response on each trial\n\nIf you do not respond before that time, then the trial will be scored as an INCORRECT response'.format(tp_rt)).draw()
+                    text='In LOW time pressure trials you will have a total of {0:.2f} seconds to make a response on each trial\n\nIf you do not respond before that time, then the trial will be scored as an INCORRECT response'.format(tp_rt)).draw()
     show(win)
     # explain_combo4
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='You will now have 15 practice trials.\n\nFor practice trials only, you will see a red bar on screen which indicates how much time you have left.'.format(tp_rt)).draw()
+                    text='You will now have 15 LOW time pressure practice trials.\n\nFor practice trials only, you will see a red bar on screen which indicates how much time you have left.'.format(tp_rt)).draw()
     show(win)
 
 ################################
@@ -1240,7 +1251,7 @@ def instructions_4_high(win, Stimuli, tp_rt):
     show(win)
     # explain_combo2
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='You will now have 15 practice trials.\n\nFor practice trials only, you will see a red bar on screen which indicates how much time you have left.'.format(tp_rt)).draw()
+                    text='You will now have 15 HIGH time pressure practice trials.\n\nFor practice trials only, you will see a red bar on screen which indicates how much time you have left.'.format(tp_rt)).draw()
     show(win)
 
 
@@ -1296,7 +1307,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
 
     dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
     dataFile.write(
-        'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, condition, trial, rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, trial_time, payout\n')
+        'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, condition, trial, rt, stim_start_rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, trial_time, payout\n')
 
     #--------------#
     # Run trials   #
@@ -1455,6 +1466,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                 # end trial if no time left
                 if elapsed_time >= trial_time:
                     total_rt = trialClock.getTime() - start_rt
+                    stim_start_rt = trialClock.getTime() - stim_start_time
                     fix_rt = trialClock.getTime() - fix_start_time
                     fix_array.append(previous)
                     rt_array.append(fix_rt)
@@ -1483,7 +1495,12 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                         for s in STIM_LIST:
                             s.draw()
 
-                        elapsed_time = trialClock.getTime() - start_rt
+                        # elapsed time is counted from first fixation onset
+                        if len(fix_array)>0:
+                        	elapsed_time = trialClock.getTime() - stim_start_time
+                        else: 
+                        	elapsed_time = 0
+
                         # add time bar if it is a practice trial
                         if trial_type == 'practice':
                             # calculate percent complete
@@ -1509,6 +1526,10 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                             rt_array.append(fix_rt)
                             previous = 'left'
                             fix_start_time = trialClock.getTime()
+                            # start clock with first stim selection
+                            if len(fix_array) == 1:
+                            	stim_start_time = trialClock.getTime()
+
                         while response[key.LEFT]:
                             # get out of loop if time is up...
                             if elapsed_time >= trial_time:
@@ -1518,7 +1539,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                             for s in STIM_LIST:
                                 s.draw()
 
-                            elapsed_time = trialClock.getTime() - start_rt
+                            elapsed_time = trialClock.getTime() - stim_start_time
                             # add time bar if it is a practice trial
                             if trial_type == 'practice':
                                 # calculate percent complete
@@ -1548,6 +1569,9 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                             rt_array.append(fix_rt)
                             previous = 'right'
                             fix_start_time = trialClock.getTime()
+                            # start clock with first stim selection
+                            if len(fix_array) == 1:
+                            	stim_start_time = trialClock.getTime()
 
                         while response[key.RIGHT]:
                             # get out of loop if time is up...
@@ -1556,7 +1580,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                             # draw to screen
                             for s in STIM_LIST:
                                 s.draw()
-                            elapsed_time = trialClock.getTime() - start_rt
+                            elapsed_time = trialClock.getTime() - stim_start_time
                             # add time bar if it is a practice trial
                             if trial_type == 'practice':
                                 # calculate percent complete
@@ -1576,6 +1600,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                     # Choice
                     elif len(keystroke)>0 and keystroke[0] == 'up':
                         total_rt = trialClock.getTime() - start_rt
+                        stim_start_rt = trialClock.getTime() - stim_start_time
                         fix_rt = trialClock.getTime() - fix_start_time
                         fix_array.append(previous)
                         rt_array.append(fix_rt)
@@ -1589,6 +1614,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
 
                     elif len(keystroke)>0 and keystroke[0] == 'down':
                         total_rt = trialClock.getTime() - start_rt
+                        stim_start_rt = trialClock.getTime() - stim_start_time
                         fix_rt = trialClock.getTime() - fix_start_time
                         fix_array.append(previous)
                         rt_array.append(fix_rt)
@@ -1713,7 +1739,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                 condition = 'Practice TP'
                 for fix_num in range(len(fix_array)):
                     dataFile.write(
-                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%.2f,%i\n' % (expInfo['dateStr'],
+                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%.2f,%i\n' % (expInfo['dateStr'],
                                                                                                                                     expInfo['psychopy_version'],
                                                                                                                                     expInfo['exp_version'],
                                                                                                                                     expInfo['face_version'],
@@ -1724,6 +1750,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                                                                                                                                     condition,
                                                                                                                                     trial,
                                                                                                                                     total_rt,
+                                                                                                                                    stim_start_rt,
                                                                                                                                     response,
                                                                                                                                     correct_response,
                                                                                                                                     summed_val_total,
@@ -1746,7 +1773,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
             if trial_type == 'task':
                 for fix_num in range(len(fix_array)):
                     dataFile.write(
-                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%.2f,%i\n' % (expInfo['dateStr'],
+                        '%s,%s,%s,%i,%i,%s,%i,%i,%s,%i,%.3f,%.3f,%i,%i,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%.2f,%.2f,%i,%.3f,%s,%i,%.2f,%.2f,%i\n' % (expInfo['dateStr'],
                                                                                                                                     expInfo['psychopy_version'],
                                                                                                                                     expInfo['exp_version'],
                                                                                                                                     expInfo['face_version'],
@@ -1757,6 +1784,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                                                                                                                                     condition,
                                                                                                                                     trial,
                                                                                                                                     total_rt,
+                                                                                                                                    stim_start_rt,
                                                                                                                                     response,
                                                                                                                                     correct_response,
                                                                                                                                     summed_val_total,
@@ -1882,6 +1910,7 @@ def instructions_5(win, task_trial_num, tp_rt, blocks=1):
 # See 4.2 task (same for both)
 
 
+
 ###########################
 # 6.1 RECALL INSTRUCTIONS #
 ###########################
@@ -1889,7 +1918,7 @@ def instructions_5(win, task_trial_num, tp_rt, blocks=1):
 
 def instructions_6(win, recall_trial_num):
     """
-    Function to show instructions for "6 TASK" section of MADE.
+    Function to show instructions for "7 TASK" section of MADE.
 
     Keyword arguments:
     win -- these are the window/monitor parameters that were set up earlier
@@ -1898,7 +1927,7 @@ def instructions_6(win, recall_trial_num):
     #################### RECALL ####################
     # section
     visual.TextStim(win, pos=[0, 0], units='norm', height=0.28, color=-1,
-                    text='Section 6').draw()
+                    text='Section 6\n\nRecall').draw()
     show(win)
     # explain1
     visual.TextStim(win, pos=[0, 0], height=0.9,
@@ -1921,11 +1950,105 @@ def instructions_6(win, recall_trial_num):
 # See 1.2 Stim Val Test (same for both)
 
 
+####################
+# 7.1 INSTRUCTIONS #
+####################
+
+
+def instructions_7(win):
+    """
+    Function to show instructions for Rating section of MADE.
+
+    Keyword arguments:
+    win -- these are the window/monitor parameters that were set up earlier
+    """
+    event.clearEvents()
+    #################### RECALL ####################
+    # section
+    visual.TextStim(win, pos=[0, 0], units='norm', height=0.28, color=-1,
+                    text='Section 7:\n\nRating').draw()
+    show(win)
+    # explain1
+    visual.TextStim(win, pos=[0, 0], height=0.9,
+                    text='In this section you will rate the two faces for attractiveness.').draw()
+    show(win)
+    # winning_money2
+    visual.TextStim(win, pos=[0, 0], height=0.9,
+                    text='Ready to begin?').draw()
+    show(win)
+
+
+##############
+# 7.2 RATE #
+##############
+
+def face_eval(win, expInfo, Stimuli):
+	
+	fileName = 'subject_data/' + str(expInfo['subject']) + '/' + str(expInfo['subject']) + '_rating_' + expInfo['dateStr']
+
+	dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
+	dataFile.write('date, psychopy_version, exp_version, face_version, subject, image, image_val, own_rating, other_rating\n')
+
+	rate_stims = namedtuple('rate_stims', 'image, value')
+	rate_stims.image = [Stimuli.face[0], Stimuli.face[100]]
+	rate_stims.value = [Stimuli.face_val[0], Stimuli.face_val[100]]
+
+	vals = np.arange(len(rate_stims.image))
+	np.random.shuffle(vals)
+
+	for i in vals:
+		face = visual.ImageStim(win, image='images/faces_a/' + rate_stims.image[i], 
+			pos=(0, 0), size=7, units='deg')
+
+		myRatingScale = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
+		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
+		txt1 = "Click on the line to choose"
+		txt2 = "How attractive do you find his person?"
+		myItem1 = visual.TextStim(win, text=txt1, pos=(0,0.55), height=.06, units='norm')
+		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
+
+		# show & update until a response has been made
+		while myRatingScale.noResponse:
+		    myItem1.draw()
+		    myItem2.draw()
+		    myRatingScale.draw()
+		    face.draw()
+		    win.flip()
+		own_rating = myRatingScale.getRating()
+
+		myRatingScale2 = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
+		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
+
+		txt2 = "How attractive do you think OTHER PEOPLE, on average, would find his person?"
+		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.7), height=.08, units='norm')
+
+		# show & update until a response has been made
+		while myRatingScale2.noResponse:
+		    myItem1.draw()
+		    myItem2.draw()
+		    myRatingScale2.draw()
+		    face.draw()
+		    win.flip()
+		other_rating = myRatingScale2.getRating()
+
+
+		dataFile.write('%s,%s,%s,%i,%i,%s,%.2f,%i,%i\n' % (expInfo['dateStr'],
+			expInfo['psychopy_version'],
+			expInfo['exp_version'],
+			expInfo['face_version'],
+			expInfo['subject'],
+			rate_stims.image[i],
+			rate_stims.value[i],
+			own_rating,
+			other_rating))
+	dataFile.close()
+
+
 #############################
-# 7.1 FEEDBACK INSTRUCTIONS #
+# 8.1 FEEDBACK INSTRUCTIONS #
 #############################
 
-def instructions_7(win, payout_1, payout_2):
+def instructions_8(win, payout_1, payout_2):
     """
     Function to show instructions upon completion of MADE.
 
