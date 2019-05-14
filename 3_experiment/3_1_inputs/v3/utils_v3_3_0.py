@@ -1237,12 +1237,15 @@ def face_eval(win, expInfo, Stimuli):
 
 		myRatingScale = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
 		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
-		txt = "How attractive do you find his person?"
-		myItem = visual.TextStim(win, text=txt, pos=(0,0.7), height=.08, units='norm')
-
+		txt1 = "Click on the line to choose"
+        txt2 = "How attractive do you find his person?"
+		myItem1 = visual.TextStim(win, text=txt1, pos=(0,0.55), height=.06, units='norm')
+        myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
+        
 		# show & update until a response has been made
 		while myRatingScale.noResponse:
-		    myItem.draw()
+		    myItem1.draw()
+            myItem2.draw()
 		    myRatingScale.draw()
 		    face.draw()
 		    win.flip()
@@ -1252,11 +1255,12 @@ def face_eval(win, expInfo, Stimuli):
 		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
 
 		txt = "How attractive do you think OTHER PEOPLE, on average, would find his person?"
-		myItem = visual.TextStim(win, text=txt, pos=(0,0.7), height=.08, units='norm')
+		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
 
 		# show & update until a response has been made
 		while myRatingScale2.noResponse:
-		    myItem.draw()
+		    myItem1.draw()
+            myItem2.draw()
 		    myRatingScale2.draw()
 		    face.draw()
 		    win.flip()
