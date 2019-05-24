@@ -2020,7 +2020,7 @@ def face_eval(win, expInfo, Stimuli):
 		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
 
 		txt2 = "How attractive do you think OTHER PEOPLE, on average, would find his person?"
-		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.7), height=.08, units='norm')
+		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
 
 		# show & update until a response has been made
 		while myRatingScale2.noResponse:
