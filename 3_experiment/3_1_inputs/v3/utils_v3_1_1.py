@@ -194,15 +194,11 @@ def instructions_1(win, Stimuli):
                     text='Make sure you pay attention as you learn about the images, since you will eventually be making choices about them in which you could end up winning or losing money.').draw()
     show(win)
 
-    # intro6
-    visual.TextStim(win, pos=[0, 0], height=0.7,
-                    text='Note that the images are going to be MORPHED, so make sure you take time to remember what the originals look like!').draw()
-    show(win)
 
     #################### FACES ####################
     # face screen
     visual.TextStim(win, pos=[0, 0],
-                    text='First we will show you the faces.').draw()
+                    text='First we will show you the faces, and tell you what each face is worth.\n\nPay attention to what each face looks like, and try to commit its monetary value to memory.').draw()
     show(win)
     # face screen val 0
     visual.ImageStim(win, image='images/faces_a/' + Stimuli.face[0],
@@ -220,11 +216,11 @@ def instructions_1(win, Stimuli):
     show(win)
     # face screen morph1
     visual.TextStim(win, pos=[0, 0],
-                    text='In the experiment the faces will be blended together (morphed).').draw()
+                    text='In the experiment, we will use blended (morphed) images of the two faces to signal values between -$1.00 and +1.00.').draw()
     show(win)
     # face screen morph2
     visual.TextStim(win, pos=[0, 0],
-                    text='The value will depend on how MUCH of each face is present in the morph.').draw()
+                    text='In other words, the value will depend on how MUCH of each face is present in the image.').draw()
     show(win)
     # face screen morph3
     visual.ImageStim(win, image='images/faces_a/' + Stimuli.face[50],
@@ -248,7 +244,7 @@ def instructions_1(win, Stimuli):
     #################### HOUSES ####################
     # house screen
     visual.TextStim(win, pos=[0, 0],
-                    text='There are also houses').draw()
+                    text='As we mentioned before, faces are not the only images that can signal the value of an option. There will also be houses.').draw()
     show(win)
     # house screen val 0
     visual.ImageStim(win, image='images/houses_a/' + Stimuli.house[0],
@@ -276,11 +272,11 @@ def instructions_1(win, Stimuli):
     show(win)
     # test explanation2
     visual.TextStim(win, pos=[0, 0], height=0.8,
-                    text='There will be 25 trials.\n\nYour goal is to achieve an accuracy rate of 70% or better.\n\n(This means that you are within $0.30 of the actual value on average)').draw()
+                    text='Your goal is to achieve an accuracy rate of 70% or better.\n\n(This means that you are within $0.30 of the actual value on average)').draw()
     show(win)
     # test explanation3
     visual.TextStim(win, pos=[0, 0], height=0.8,
-                    text='Not to worry, you have 5 rounds to achieve this accuracy level.').draw()
+                    text='Not to worry, you will have up 5 rounds of practice to achieve this accuracy.\n\nEach round will have 25 trials.').draw()
     show(win)
     # test explanation4
     visual.TextStim(win, pos=[0, 0], height=1.5,
@@ -525,7 +521,7 @@ def instructions_2(win, Stimuli):
     show(win)
     # explain_combo1
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='In the experiment you will need to consider the SUM of the values of TWO images - one FACE and one HOUSE - at the same time.').draw()
+                    text='Now that you have learned the values of the faces and houses, you will be completing the main part of the experiment.\n\nIn this task, you will need to consider the SUM of the values of TWO images - one FACE and one HOUSE - at the same time.').draw()
     show(win)
     # explain_combo2
     visual.TextStim(win, pos=[0, +6], height=0.65,
@@ -932,6 +928,10 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                                 text='House Value: {} x ${:.2f} = ${:.2f}'.format(house_mult, house_val_base, house_val_total)).draw()
                 visual.TextStim(win, units='norm', pos=[0,0.07], height=0.08,
                                 text='Face Value: {} x ${:.2f} = ${:.2f}'.format(face_mult, face_val_base, face_val_total)).draw()
+                bottom_bar.draw()
+                visual.TextStim(win, units='norm', pos=[0.0, -.95], height=0.06,
+                	text='Press SPACE to continue...').draw()
+
             if trial_type == 'task':
                 ### draw background color based on accuracy rate
                 if accuracy < 0.55:
@@ -1137,7 +1137,7 @@ def instructions_3(win, task_trial_num, blocks):
     show(win)
     # winning_money2
     visual.TextStim(win, pos=[0, 0], height=0.9,
-                    text='We will will be paid based on your level of accuracy.\n\nThis is how the payment works:\n\nAccuracy   Payment\n0-55%       $0     \n55-65%     $2     \n65-75%     $5     \n75-85%     $9     \n85-95%     $14    \n95-99%     $20    \n99-100%   $30    \n100%        $50    ').draw()
+                    text='You will be paid based on your level of accuracy.\n\nThis is how the payment works:\n\nAccuracy   Payment\n0-55%       $0     \n55-65%     $2     \n65-75%     $5     \n75-85%     $9     \n85-95%     $14    \n95-99%     $20    \n99-100%   $30    \n100%        $50    ').draw()
     show(win)
 
     # winning_money3
@@ -1217,6 +1217,10 @@ def instructions_4_low(win, Stimuli, tp_rt):
                     text='In LOW time pressure trials you will have a total of {0:.2f} seconds to make a response on each trial\n\nIf you do not respond before that time, then the trial will be scored as an INCORRECT response'.format(tp_rt)).draw()
     show(win)
     # explain_combo4
+    visual.TextStim(win, pos=[0, 0], height=0.9,
+                    text='Please note: your time limit will only begin once you have pressed to reveal a face or house for the first time. This means that you have as much time as you need beforehand to take in the value of the multipliers.').draw()
+    show(win)
+    # explain_combo5
     visual.TextStim(win, pos=[0, 0], height=0.9,
                     text='You will now have 15 LOW time pressure practice trials.\n\nFor practice trials only, you will see a red bar on screen which indicates how much time you have left.'.format(tp_rt)).draw()
     show(win)
@@ -2006,19 +2010,25 @@ def face_eval(win, expInfo, Stimuli):
 		txt2 = "How attractive do you find his person?"
 		myItem1 = visual.TextStim(win, text=txt1, pos=(0,0.55), height=.06, units='norm')
 		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
+		anchor_text1 = visual.TextStim(win, text='Extremely\nUnattractive', pos=(-0.6,-0.65), height=.06, units='norm')
+		anchor_text2 = visual.TextStim(win, text='Extremely\nAttractive', pos=(0.6,-0.65), height=.06, units='norm')
+
 
 		# show & update until a response has been made
 		while myRatingScale.noResponse:
 		    myItem1.draw()
 		    myItem2.draw()
 		    myRatingScale.draw()
+		    anchor_text1.draw()
+		    anchor_text2.draw()
 		    face.draw()
 		    win.flip()
 		own_rating = myRatingScale.getRating()
 
+		# ratubg scale
 		myRatingScale2 = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
 		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
-
+		
 		txt2 = "How attractive do you think OTHER PEOPLE, on average, would find his person?"
 		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
 
