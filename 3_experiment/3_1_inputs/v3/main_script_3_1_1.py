@@ -6,7 +6,7 @@ Time Pressure Version 2
     - three condition (low/hi/no time pressure)
     - time starts from first stimulation selection
     
-2019.05.14
+2019.06.06
 
 Author: Daniel J Wilson
 Contact: daniel.j.wilson@gmail.com
@@ -124,6 +124,15 @@ else:
 #-----------------#
 
 globalClock = core.Clock()
+
+#--------------#
+# 0.6 Kill Key #
+#--------------#
+
+from psychopy import event
+event.globalKeys.clear()key = 'q'
+modifiers = ['ctrl']def myfunc():
+    core.quit()event.globalKeys.add(key=key, func=myfunc, modifiers=modifiers)
 
 
 ##################

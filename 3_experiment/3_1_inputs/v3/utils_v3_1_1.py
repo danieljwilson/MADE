@@ -125,7 +125,7 @@ def init_stims_weights(expInfo):
 
 # create array of conditions
 def init_conds():
-    calibration = [('No Time Pressure')] * 2 
+    calibration = [('No Time Pressure')] * 2
     one = [('No Time Pressure'),('Low Time Pressure'),('High Time Pressure')]
     two = [('No Time Pressure'),('Low Time Pressure'),('High Time Pressure')]
     three = [('No Time Pressure'),('Low Time Pressure'),('High Time Pressure')]
@@ -663,6 +663,8 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
     dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
     dataFile.write(
         'date, psychopy_version, exp_version, face_version, house_version, left, subject, block, condition, trial, rt, stim_start_rt, response, correct, summed_val_total, face_image, face_val_base, face_mult, face_val_total, house_image, house_val_base, house_mult, house_val_total, fix_num, fix_rt, fix_stim, fix_num_total, accuracy, payout\n')
+    # initialize in case subjects make a selection without viewing stimuli
+    stim_start_time = None
 
     #--------------#
     # Run trials   #
@@ -855,7 +857,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                         fix_start_time = trialClock.getTime()
                         # start clock with first stim selection
                         if len(fix_array) == 1:
-                        	stim_start_time = trialClock.getTime() 
+                        	stim_start_time = trialClock.getTime()
 
                     while response[key.RIGHT]:
                         # draw to screen
@@ -871,7 +873,11 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                 # Choice
                 elif len(keystroke)>0 and keystroke[0] == 'up':
                     total_rt = trialClock.getTime() - start_rt
-                    stim_start_rt = trialClock.getTime() - stim_start_time
+                    # test that a stim has been viewed
+                    if stim_start_time != None:
+                        stim_start_rt = trialClock.getTime() - stim_start_time
+                    else:
+                	    stim_start_rt = 0
                     fix_rt = trialClock.getTime() - fix_start_time
                     fix_array.append(previous)
                     rt_array.append(fix_rt)
@@ -885,7 +891,11 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
 
                 elif len(keystroke)>0 and keystroke[0] == 'down':
                     total_rt = trialClock.getTime() - start_rt
-                    stim_start_rt = trialClock.getTime() - stim_start_time
+                    # test that a stim has been viewed
+                    if stim_start_time != None:
+                        stim_start_rt = trialClock.getTime() - stim_start_time
+                    else:
+                	    stim_start_rt = 0
                     fix_rt = trialClock.getTime() - fix_start_time
                     fix_array.append(previous)
                     rt_array.append(fix_rt)
@@ -896,7 +906,7 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                         correct_response = 1
                     else:
                         correct_response = 0
-            
+
             # update trial counter
             total_trial_count +=1
             # update accuracy and indicate if CORRECT
@@ -990,16 +1000,16 @@ def task_trials(win, expInfo, Rand_Stimuli, practice_trial_num,
                 visual.TextStim(win, units='norm', pos=[-0.85, 0.625], height=0.16, color=(1), text='$30').draw()
                 visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.875], color=(0.8, -.2, -.2)).draw()
                 visual.TextStim(win, units='norm', pos=[-0.85, 0.875], height=0.16, color=(1), text='$50').draw()
-                
+
             ### show color bar and their position (i.e. how close
             ### to the next "level")
-    
+
                 # report actual summed val
                 visual.TextStim(win, units='norm', pos=[0.5, 0], height=0.12, color=(-1),
                                 text='Actual value:\n${:.2f}'.format(summed_val_total)).draw()
                 # report accuracy
                 visual.Rect(win, units='norm', pos=[-0.3, accuracy_pos], width=0.7 , height=0.12,
-                            color=-1).draw()   
+                            color=-1).draw()
                 visual.Rect(win, units='norm', pos=[-0.6, accuracy_pos], width=0.2 , height=0.015,
                             color=-1).draw()        # background rect
                 visual.TextStim(win, units='norm', pos=[-0.3, accuracy_pos], height=0.10, color=(1),
@@ -1283,7 +1293,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
     tp_rt -- float time allowed per trial for subject response
     """
 
-    
+
     # set trials/block
     if trial_type == 'practice':
         trial_count = np.arange(practice_tp_trial_num).reshape((blocks,practice_tp_trial_num))
@@ -1300,6 +1310,8 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
     correct_count = 0
     # timing object
     trialClock = core.Clock()
+    # in case subject selects before viewing stim
+    stim_start_time = None
 
     #--------------------#
     # Create data file   #
@@ -1502,7 +1514,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                         # elapsed time is counted from first fixation onset
                         if len(fix_array)>0:
                         	elapsed_time = trialClock.getTime() - stim_start_time
-                        else: 
+                        else:
                         	elapsed_time = 0
 
                         # add time bar if it is a practice trial
@@ -1593,7 +1605,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                                 # draw bar: length and color based on time elaspsed
                                 visual.Rect(win, units='norm', width=2, height=.2, pos=[-2+pct_comp*2, -.78],
                                     color=[0.5 + pct_comp*0.5, -0.5, -0.5]).draw()
-                            
+
                             # add stim
                             right_select_box.draw()
                             right_stim.draw()
@@ -1604,7 +1616,11 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                     # Choice
                     elif len(keystroke)>0 and keystroke[0] == 'up':
                         total_rt = trialClock.getTime() - start_rt
-                        stim_start_rt = trialClock.getTime() - stim_start_time
+                        # test that a stim has been viewed
+                        if stim_start_time != None:
+                            stim_start_rt = trialClock.getTime() - stim_start_time
+                        else:
+                    	    stim_start_rt = 0
                         fix_rt = trialClock.getTime() - fix_start_time
                         fix_array.append(previous)
                         rt_array.append(fix_rt)
@@ -1618,7 +1634,11 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
 
                     elif len(keystroke)>0 and keystroke[0] == 'down':
                         total_rt = trialClock.getTime() - start_rt
-                        stim_start_rt = trialClock.getTime() - stim_start_time
+                        # test that a stim has been viewed
+                        if stim_start_time != None:
+                            stim_start_rt = trialClock.getTime() - stim_start_time
+                        else:
+                    	    stim_start_rt = 0
                         fix_rt = trialClock.getTime() - fix_start_time
                         fix_array.append(previous)
                         rt_array.append(fix_rt)
@@ -1630,7 +1650,7 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                         else:
                             correct_response = 0
 
-            
+
             # update trial counter
             total_trial_count +=1
             # update accuracy and indicate if CORRECT
@@ -1723,16 +1743,16 @@ def task_tp_trials(win, expInfo, Rand_Stimuli, practice_tp_trial_num,
                 visual.TextStim(win, units='norm', pos=[-0.85, 0.625], height=0.16, color=(1), text='$30').draw()
                 visual.Rect(win, units='norm', width=0.3, height=0.25, pos=[-0.85, 0.875], color=(0.8, -.2, -.2)).draw()
                 visual.TextStim(win, units='norm', pos=[-0.85, 0.875], height=0.16, color=(1), text='$50').draw()
-                
+
             ### show color bar and their position (i.e. how close
             ### to the next "level")
-    
+
                 # report actual summed val
                 visual.TextStim(win, units='norm', pos=[0.5, 0], height=0.12, color=(-1),
                                 text='Actual value:\n${:.2f}'.format(summed_val_total)).draw()
                 # report accuracy
                 visual.Rect(win, units='norm', pos=[-0.3, accuracy_pos], width=0.7 , height=0.12,
-                            color=-1).draw()   
+                            color=-1).draw()
                 visual.Rect(win, units='norm', pos=[-0.6, accuracy_pos], width=0.2 , height=0.015,
                             color=-1).draw()        # background rect
                 visual.TextStim(win, units='norm', pos=[-0.3, accuracy_pos], height=0.10, color=(1),
@@ -1987,7 +2007,7 @@ def instructions_7(win):
 ##############
 
 def face_eval(win, expInfo, Stimuli):
-	
+
 	fileName = 'subject_data/' + str(expInfo['subject']) + '/' + str(expInfo['subject']) + '_rating_' + expInfo['dateStr']
 
 	dataFile = open(fileName + '.csv', 'w')  # a simple text file with 'comma-separated-values'
@@ -2001,7 +2021,7 @@ def face_eval(win, expInfo, Stimuli):
 	np.random.shuffle(vals)
 
 	for i in vals:
-		face = visual.ImageStim(win, image='images/faces_a/' + rate_stims.image[i], 
+		face = visual.ImageStim(win, image='images/faces_a/' + rate_stims.image[i],
 			pos=(0, 0), size=7, units='deg')
 
 		myRatingScale = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
@@ -2028,7 +2048,7 @@ def face_eval(win, expInfo, Stimuli):
 		# ratubg scale
 		myRatingScale2 = visual.RatingScale(win, pos=(0, -0.65), low=0, high=10, marker='slider',
 		    tickMarks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stretch=1.5, tickHeight=1.5)
-		
+
 		txt2 = "How attractive do you think OTHER PEOPLE, on average, would find his person?"
 		myItem2 = visual.TextStim(win, text=txt2, pos=(0,0.8), height=.08, units='norm')
 
@@ -2075,4 +2095,3 @@ def instructions_8(win, payout_1, payout_2):
     visual.TextStim(win, pos=[0, 0], height=1.3, color=-1,
                     text='You will now complete a few questionnaires.\n\nPlease let the research assistant know that you are ready to continue.').draw()
     win.flip()
-
