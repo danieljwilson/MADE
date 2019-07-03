@@ -11,3 +11,5 @@
 # Compiled source #
 ###################
 
+# Sphinx documentation
+docs/_build/
