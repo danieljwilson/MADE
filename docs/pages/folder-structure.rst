@@ -9,3 +9,8 @@ The folder structure for the project follows the format illustrated below:
    :width: 217
    :alt: folder structure
 
+.. figure:: ../_static/images/folder_structure.png
+    :align: left
+    :figwidth: 217px
+    :target: ../_static/images/folder_structure.png
+
