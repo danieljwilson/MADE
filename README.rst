@@ -10,12 +10,14 @@ Documentation
 =============
 
 Read the documentation online at:
-made-experiments-in-multi-attribute-decisions.rtfd.io/
+http://made-experiments-in-multi-attribute-decisions.rtfd.io/
+
 
 Optionally, build the documentation from the ``docs/`` folder::
-pip install sphinx
-cd docs/
-make html
+
+  pip install sphinx
+  cd docs/
+  make html
 
 Contact
 =============
