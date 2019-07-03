@@ -2,6 +2,19 @@
 Project Versions
 ================
 
+All versions of the project were created in `Psychopy`_.
+The code for all `experiment versions`_ is on github.
+
+.. note::
+
+    Versions 1 and 2 were made with the Builder interface.
+    Version 3 was written in plain Python using the Psychopy 3 toolbox.
+
+.. _experiment versions: https://github.com/danieljwilson/MADE/tree/master/3_experiment/3_1_inputs/versions
+.. _Psychopy: https://www.psychopy.org/
+
+====
+
 The current iterations of the project include:
 
 ---
