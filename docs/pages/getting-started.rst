@@ -28,6 +28,9 @@ Due to Dropbox issues the current process is:
 - Run locally (files are stored in ``subject_data``)
 - Upload local subject files to Dropbox at EOD
 
+----------------------
+Updating Documentation
+----------------------
 
 .. note::
 
