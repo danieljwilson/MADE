@@ -19,14 +19,6 @@ The questionnaire is hosted on Qualtrix.
 Contact daniel.j.wilson@gmail.com for login information.
 
 
-Re: Dropbox
-----------------------
-Due to Dropbox issues the current process is:
-
-- Download the latest experiment from GitHub
-- Run locally (files are stored in ``subject_data``)
-- Upload local subject files to Dropbox at EOD
-
 ----------------------
 Updating Documentation
 ----------------------
