@@ -80,7 +80,7 @@ and is where all the documentation lives.
 Just look for this image on the top right of the page:
 
 .. image:: ../_static/images/edit_on_github.png
-   :width: 150
+   :width: 250
    :alt: edit on github image
 
 Click on it (which automatically forks it), make your edits
