@@ -8,12 +8,11 @@ Behavioral
 -------------
 
 The `behavioral analysis notebook`_ contains the code for:
-- Basic Psychometrics
 
+- Basic Psychometrics
     * RT
     * Fixations
     * P(accept) offer
-
 - Performance
 - Attention
 - Multiplier weighting
