@@ -135,5 +135,5 @@ Description
 
 Goal
 -----
-- Test whether subjects overweight attractive vs. unattractive
+- Test whether subjects over-weight attractive vs. unattractive
   faces
