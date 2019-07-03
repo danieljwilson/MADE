@@ -54,3 +54,10 @@ v3.3.0
 - Bias test: Attractiveness
 - Accuracy incentive
 - (0.1, 0.5, 1, 2, 3, 10)
+
+
+---
+v1
+---
+
+The goal of this version was to...
