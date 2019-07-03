@@ -4,11 +4,11 @@ Folder Structure
 
 The folder structure for the project follows the format illustrated below:
 
-.. figure:: ../_static/images/folder_structure.png
-    :align: left
-    :figwidth: 250px
-    :target: ../_static/images/folder_structure.png
+.. image:: ../_static/images/folder_structure.png
+   :width: 250
+   :alt: folder structure
 
+====
 
 --------------------
 1_project_management
