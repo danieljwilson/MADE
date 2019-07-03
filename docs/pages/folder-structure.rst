@@ -9,6 +9,7 @@ The folder structure for the project follows the format illustrated below:
     :figwidth: 250px
     :target: ../_static/images/folder_structure.png
 
+
 --------------------
 1_project_management
 --------------------
