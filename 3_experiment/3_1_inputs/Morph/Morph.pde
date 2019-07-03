@@ -3,7 +3,7 @@
 // Daniel Shiffman
 
 // What version/images?
-String version = "m_a_1";
+String version = "m_a_2";
 
 // Two images
 PImage a;
@@ -23,8 +23,8 @@ void setup() {
   size(844, 844, P2D);
 
   // Load the images
-  a = loadImage("am_01.jpg");
-  b = loadImage("am_02.jpg");
+  a = loadImage("am_03.jpg");
+  b = loadImage("am_04.jpg");
 
   // Create the morphing object
   morph = new Morpher(a, b);
