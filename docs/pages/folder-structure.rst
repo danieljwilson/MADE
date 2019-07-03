@@ -4,13 +4,8 @@ Folder Structure
 
 The folder structure for the project follows the format illustrated below:
 
-.. image:: ../images/folder_structure.png
-   :height: 341
-   :width: 217
-   :alt: folder structure
-
 .. figure:: ../_static/images/folder_structure.png
     :align: left
-    :figwidth: 217px
+    :figwidth: 250px
     :target: ../_static/images/folder_structure.png
 
