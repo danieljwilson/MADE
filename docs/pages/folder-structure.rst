@@ -14,13 +14,13 @@ The folder structure for the project follows the format illustrated below:
 1_project_management
 --------------------
 
-This is not uploaded to git
+This is not uploaded to git.
 
 --------------------
 2_ethics_governence
 --------------------
 
-This is not uploaded to git
+This is not uploaded to git.
 
 --------------------
 3_experiment
@@ -30,9 +30,8 @@ This is where most of the project lives.
 
 3_1_inputs
 -----------
-Refers to the tools used to capture information.
+Refers to the tools used to capture information, including:
 
-This includes:
 - Experiment code
     * including all assets (e.g. photos)
 - Questionnaires
