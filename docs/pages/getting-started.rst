@@ -19,7 +19,6 @@ The questionnaire is hosted on Qualtrix.
 Contact daniel.j.wilson@gmail.com for login information.
 
 
-----------------------
 Re: Dropbox
 ----------------------
 Due to Dropbox issues the current process is:
