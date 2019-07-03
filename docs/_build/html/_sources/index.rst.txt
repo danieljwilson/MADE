@@ -14,8 +14,9 @@ Experiments in Multi-Attribute Value-Based Choice
 
    pages/getting-started
    pages/folder-structure
-   pages/data-analysis/psychometrics
-   pages/project-versions/v1
+   pages/project-versions
+   pages/data-analysis
+
 
 
 
