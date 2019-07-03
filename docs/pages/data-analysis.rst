@@ -57,13 +57,26 @@ The `behavioral analysis notebook`_ contains the code for:
 DDM
 -------------
 
+A number of versions of an attentional drift diffusion model (aDDM)
+were simulated and fit to the data.
+
 Versions
 --------
 
-- DDM
-- aDDM
+The versions that have been iterated through, and their fits, can be
+viewed via this Jupyter notebook [add notebook].
 
-Running on SciNet
------------------
+The data from these simulations lives [update location]
 
+Note that all simulations were run using SciNet.
+
+
+Running on a Cluster
+--------------------
+
+In order to run on a cluster (like SciNet) you will need an account.
+
+More information can be found `here`_ about options.
+
+.. _here: http://decisionneurolab.pbworks.com/w/page/132653304/Supercomputers
 

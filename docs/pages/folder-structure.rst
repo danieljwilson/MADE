@@ -55,6 +55,8 @@ This includes:
 This includes:
 
 - Plots
+- Tables
+- Markdown results section (theoretically)
 
 --------------------
 4_dissemination
