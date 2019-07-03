@@ -1,0 +1,11 @@
+﻿instr,congruence,corrAns,xPos,yPos,location,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,test_faceValue.thisRepN,test_faceValue.thisTrialN,test_faceValue.thisN,test_faceValue.thisIndex,faceImage,morph,percent,faceValue,word,houseImage,houseValue,participant,session,date,expName,psychopyVersion,frameRate,
+"Hello.
+
+In this experiment we are interested in how people make decisions.",consistent,h,200,200,up_right,0,0,0,0,,,,,,,,,,,,999,001,2019_Jan_24_1419,test02,1.85.4,59.77186275407149,
+The experiment should take about 60 minutes.,conflicting,s,200,200,up_right,0,1,1,1,,,,,,,,,,,,999,001,2019_Jan_24_1419,test02,1.85.4,59.77186275407149,
+"In the experiment, you will see images of faces and buildings that have different meanings.
+Some images are associated with winning money. Others are associated with losing money. 
+
+During this part, you will learn to associate different images with their appropriate outcomes.",consistent,s,200,200,up_right,0,2,2,2,,,,,,,,,,,,999,001,2019_Jan_24_1419,test02,1.85.4,59.77186275407149,
+You will then be tested to make sure that you have learned the values associated with the different faces and buildings.,conflicting,h,200,200,up_right,0,3,3,3,,,,,,,,,,,,999,001,2019_Jan_24_1419,test02,1.85.4,59.77186275407149,
+"Make sure you pay attention as you learn about the images, since you will eventually be making choices about them in which you could end up winning or losing money.",consistent,h,-200,200,up_left,0,4,4,4,,,,,,,,,,,,999,001,2019_Jan_24_1419,test02,1.85.4,59.77186275407149,

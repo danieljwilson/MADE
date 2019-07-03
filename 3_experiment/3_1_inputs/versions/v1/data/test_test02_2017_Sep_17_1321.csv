@@ -1,0 +1,17 @@
+xPos,location,instr,congruence,yPos,corrAns,trials.thisRepN,trials.thisTrialN,trials.thisN,trials.thisIndex,test_faceValue.thisRepN,test_faceValue.thisTrialN,test_faceValue.thisN,test_faceValue.thisIndex,houseImage,faceValue,word,houseValue,morph,faceImage,percent,key_resp_2.keys,key_resp_2.rt,key_resp_3.keys,key_resp_3.rt,key_resp_4.keys,key_resp_4.rt,key_resp_5.keys,key_resp_5.rt,key_resp_7.keys,key_resp_7.rt,key_resp_11.keys,key_resp_11.rt,key_resp_8.keys,key_resp_8.rt,inputText,numberEntry.keys,numberEntry.rt,key_resp_10.keys,key_resp_10.rt,date,frameRate,expName,session,participant,
+200,up_right,"Hello.
+
+In this experiment we are interested in how people make decisions.",consistent,200,h,0,0,0,0,,,,,,,,,,,,space,4.64446115494,,,,,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+200,up_right,The experiment should take about 60 minutes.,conflicting,200,s,0,1,1,1,,,,,,,,,,,,space,0.521014928818,,,,,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+200,up_right,"In the experiment, you will see images of faces and buildings that have different meanings.
+Some images are associated with winning money. Others are associated with losing money. 
+
+During this part, you will learn to associate different images with their appropriate outcomes.",consistent,200,s,0,2,2,2,,,,,,,,,,,,space,0.684964179993,,,,,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+200,up_right,You will then be tested to make sure that you have learned the values associated with the different faces and buildings.,conflicting,200,h,0,3,3,3,,,,,,,,,,,,space,0.271872997284,,,,,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+-200,up_left,"Make sure you pay attention as you learn about the images, since you will eventually be making choices about them in which you could end up winning or losing money.",consistent,200,h,0,4,4,4,,,,,,,,,,,,space,0.218873023987,,,,,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+,,,,,,,,,,,,,,,,,,,,,,,space,0.353143930435,,,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+,,,,,,,,,,,,,,,,,,,,,,,,,lshift,5.18336296082,,,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,lcommand,0.0342931747437,,,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,lcommand,0.617959976196,,,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,lshift,1.16620111465,,,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,space,2.70444083214,,,,,,2017_Sep_17_1321,60.1992430429,test02,001,test,
