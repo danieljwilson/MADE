@@ -44,6 +44,7 @@ Raw data lives here.
 -----------------
 
 This includes:
+
 - Scripts for preprocessing and cleaning data
 - Processed data
 - Scripts for analyzing processed data
@@ -52,6 +53,7 @@ This includes:
 -----------
 
 This includes:
+
 - Plots
 
 --------------------
