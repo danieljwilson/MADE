@@ -8,6 +8,18 @@ Welcome to MADE's documentation!
 
 Experiments in Multi-Attribute Value-Based Choice
 
+Links
+==================
+
+* Source code: https://github.com/danieljwilson/MADE
+* Contact: daniel.j.wilson@gmail.com
+
+.. * :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+
+
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
@@ -16,16 +28,3 @@ Experiments in Multi-Attribute Value-Based Choice
    pages/folder-structure
    pages/project-versions
    pages/data-analysis
-
-
-
-
-Links
-==================
-
-* :ref:`search`
-* :ref:`genindex`
-* :ref:`modindex`
-
-* Source code: https://github.com/danieljwilson/MADE
-* Contact: daniel.j.wilson@gmail.com
