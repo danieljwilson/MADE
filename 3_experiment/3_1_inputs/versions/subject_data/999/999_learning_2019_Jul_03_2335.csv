@@ -1,4 +1,0 @@
-date, psychopy_version, exp_version, unattractive_face_version, attractive_face_version, subject, block, trial, image, actual_val, input_val, rt, error, total_error, accuracy, min_accuracy
-2019_Jul_03_2335,3.0.2,3.3.0,0,1,999,1,0,face_m_u_1_015.jpg,-0.70,-0.67,7.726,0.03,0.03,97.00,70.00
-2019_Jul_03_2335,3.0.2,3.3.0,0,1,999,1,1,face_m_a_4_086.jpg,-0.72,-0.50,5.858,0.22,0.25,87.50,70.00
-2019_Jul_03_2335,3.0.2,3.3.0,0,1,999,1,2,face_m_u_1_091.jpg,0.82,0.60,4.550,0.22,0.47,84.33,70.00

@@ -1,5 +1,0 @@
-date, psychopy_version, exp_version, unattractive_face_version, attractive_face_version, subject, image, image_val, own_rating, other_rating
-2019_Jul_03_1318,3.0.2,3.3.0,0,1,999,face_f_a_3_000.jpg,1.00,7,8,3
-2019_Jul_03_1318,3.0.2,3.3.0,0,1,999,face_f_a_3_100.jpg,-1.00,9,8,2
-2019_Jul_03_1318,3.0.2,3.3.0,0,1,999,face_f_u_1_000.jpg,-1.00,3,2,3
-2019_Jul_03_1318,3.0.2,3.3.0,0,1,999,face_f_u_1_100.jpg,1.00,3,3,5
