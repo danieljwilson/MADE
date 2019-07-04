@@ -1,7 +1,7 @@
 """
 Multi Attribute Decision Making Task v3.3.0
 Attractive/Unattractive faces
-2019.06.06
+2019.07.03
 
 Author: Daniel J Wilson
 Contact: daniel.j.wilson@gmail.com
