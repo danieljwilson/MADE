@@ -11,7 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load-data Echo=FALSE}
 # LOAD TRIALS
-load("~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis/Data/v4_trials_clean.Rdata")
+filepath = "/Users/djw/Documents/pCloud_synced/Academics/PROJECTS/2017_MADE/3_experiment/3_3_data_analysis_md/R/old/Data/"
+
+load(paste0(filepath, "v4_trials.Rdata"))
 # LOAD LEARNING
 #load("~/Dropbox/PROGRAMMING/_NEURO/2017_MADE/Analysis/Data/v4_learning.Rdata")
 # LOAD INDIVIDUAL DIFF
